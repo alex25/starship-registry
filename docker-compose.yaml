@@ -1,0 +1,67 @@
+version: '3.8'
+
+services:
+  # Service for your Java application
+  app:
+    build:
+      context: .                     # Use the Dockerfile in the current directory
+      dockerfile: Dockerfile         # Name of the Dockerfile
+    container_name: starship-app     # Container name
+    ports:
+      - "8080:8080"                  # Application port
+    environment:
+      - SPRING_REDIS_HOST=redis      # Redis host
+      - SPRING_RABBITMQ_HOST=rabbitmq # RabbitMQ host
+      - SPRING_PROFILES_ACTIVE=prod  # Spring Boot active profile
+      - KEYCLOAK_AUTH_SERVER_URL=http://keycloak:8080/auth/realms/master # Keycloak URL
+      - KEYCLOAK_REALM=master        # Default realm
+      - KEYCLOAK_CLIENT_ID=starship-client # Client ID
+      - KEYCLOAK_CLIENT_SECRET=secret # Client secret (configure in Keycloak)
+    depends_on:
+      - redis                        # Ensure Redis is available before starting the app
+      - rabbitmq                     # Ensure RabbitMQ is available before starting the app
+      - keycloak                     # Ensure Keycloak is available before starting the app
+    networks:
+      - starship-network             # Common network for all services
+
+  # Service for Redis
+  redis:
+    image: redis:7                   # Official Redis image
+    container_name: starship-redis   # Container name
+    ports:
+      - "6379:6379"                  # Redis port
+    networks:
+      - starship-network             # Common network for all services
+
+  # Service for RabbitMQ
+  rabbitmq:
+    image: rabbitmq:3-management     # Official RabbitMQ image with management UI
+    container_name: starship-rabbitmq # Container name
+    ports:
+      - "5672:5672"                  # RabbitMQ port for messaging
+      - "15672:15672"                # RabbitMQ management web interface port
+    environment:
+      RABBITMQ_DEFAULT_USER: admin   # Default RabbitMQ user
+      RABBITMQ_DEFAULT_PASS: password # Default RabbitMQ password
+    networks:
+      - starship-network             # Common network for all services
+
+  # Service for Keycloak
+  keycloak:
+    image: quay.io/keycloak/keycloak:22.0.1 # Official Keycloak image
+    container_name: starship-keycloak       # Container name
+    ports:
+      - "8081:8080"                         # Keycloak port (changed to 8081 to avoid conflict with the app)
+    environment:
+      KEYCLOAK_ADMIN: admin                 # Keycloak admin user
+      KEYCLOAK_ADMIN_PASSWORD: admin        # Keycloak admin password
+      KC_HTTP_ENABLED: true                 # Enable HTTP (use HTTPS in production)
+    command:
+      - start-dev                           # Development mode (do not use in production)
+    networks:
+      - starship-network                    # Common network for all services
+
+# Network configuration
+networks:
+  starship-network:
+    driver: bridge                          # Bridge network type for communication between containers

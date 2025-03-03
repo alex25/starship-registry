@@ -1,0 +1,46 @@
+@startuml
+title Use case Modify Starship Feature
+
+actor User
+participant "StarshipController" as Controller
+participant "StarshipService" as Service
+participant "StarshipRepository" as Repository
+participant "CacheManager" as Cache
+
+== Scenario 1: Successfully modify an existing starship ==
+User -> Controller: Request to modify starship (ID, new details)
+Controller -> Service: Call modifyStarship(ID, new details)
+Service -> Repository: Save updated starship entity
+Repository --> Service: Return updated entity
+Service -> Cache: Clear caches ("starshipsByName", "starshipById", "allStarships")
+Cache --> Service: Caches cleared
+Service --> Controller: Return success response
+Controller --> User: Display updated starship details
+
+== Scenario 2: Attempt to modify a starship with a duplicate name ==
+User -> Controller: Request to modify starship (ID, duplicate name)
+Controller -> Service: Call modifyStarship(ID, duplicate name)
+Service -> Repository: Save updated starship entity
+Repository --> Service: Throw DuplicateKeyException
+Service --> Controller: Return error response
+Controller --> User: Display error message "Starship with the same name already exists"
+
+== Scenario 3: Attempt to modify a non-existent starship ==
+User -> Controller: Request to modify starship (non-existent ID, new details)
+Controller -> Service: Call modifyStarship(non-existent ID, new details)
+Service -> Repository: Save updated starship entity
+Repository --> Service: Throw EntityNotFoundException
+Service --> Controller: Return error response
+Controller --> User: Display error message "Starship with ID not found"
+
+== Scenario 4: Clear cache after modifying a starship ==
+User -> Controller: Request to modify starship (ID, new details)
+Controller -> Service: Call modifyStarship(ID, new details)
+Service -> Repository: Save updated starship entity
+Repository --> Service: Return updated entity
+Service -> Cache: Clear caches ("starshipsByName", "starshipById", "allStarships")
+Cache --> Service: Caches cleared
+Service --> Controller: Return success response
+Controller --> User: Confirm modification and cache cleared
+
+@enduml
