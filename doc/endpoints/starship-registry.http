@@ -1,0 +1,50 @@
+@hostname = localhost
+@port = 8080
+@host = {{hostname}}:{{port}}
+@contextPath = starship-registry/v1
+
+
+####
+# find by id
+GET http://{{host}}/{{contextPath}}/starships/2
+
+####
+# find by name
+GET http://{{host}}/{{contextPath}}/starships/search?name=Unknown
+
+####
+# find all
+GET http://{{host}}/{{contextPath}}/starships?page=1&size=2
+
+
+###
+# modify an existing starship
+PUT http://{{host}}/{{contextPath}}/starships/1
+Content-Type: application/json
+
+{ "name": "Millennium Falcon 3", "movieId": 1 }
+
+###
+# add a new starship
+POST http://{{host}}/{{contextPath}}/starships
+Content-Type: application/json
+
+{
+  "name": "X-Wingoo",
+  "movieTitle": "Star Wars: A New Hope",
+  "movieRelease": 1977,
+  "isTvSeries": false
+  }
+}
+
+###
+# openapi doc
+GET http://{{host}}/{{contextPath}}/api-docs
+
+###
+# Swagger ui
+GET http://{{host}}/{{contextPath}}/swagger-ui.html
+
+###
+# Health
+http://localhost:8081/monitor/health

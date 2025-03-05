@@ -1,0 +1,9 @@
+package com.w2m.starshipregistry.core.ports.inbound;
+
+import com.w2m.starshipregistry.core.dtos.StarshipDtoNullable;
+import com.w2m.starshipregistry.core.dtos.StarshipUpdateRequest;
+
+public interface ModifyStarshipPort {
+
+    StarshipDtoNullable execute(Long id, StarshipUpdateRequest updateRequest);
+}

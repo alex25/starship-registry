@@ -1,0 +1,24 @@
+@startuml
+title Feature: Add New Starship
+
+actor User
+participant "StarshipController" as Controller
+participant "AddNewStarshipUseCase" as UseCase
+participant "StarshipData" as DataAdapter
+participant "StarshipRepository" as Repository
+participant "CacheManager" as Cache
+
+User -> Controller: Submit new starship details (name, movieTitle)
+Controller -> UseCase: Execute addNewStarship(starshipDto)
+UseCase -> DataAdapter: Save starship details
+DataAdapter -> Repository: Save starship entity
+Repository --> DataAdapter: Return saved starship entity
+DataAdapter -> Cache: Clear caches ("starshipsByName", "starshipById", "allStarships")
+DataAdapter --> UseCase: Return saved starship DTO
+UseCase --> Controller: Return saved starship DTO
+Controller --> User: Respond with success (201 Created)
+
+legend right
+  This sequence diagram represents the flow of adding a new starship to the system.
+endlegend
+@enduml
