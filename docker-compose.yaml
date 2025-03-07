@@ -8,7 +8,7 @@ services:
       dockerfile: Dockerfile         # Name of the Dockerfile
     container_name: starship-app     # Container name
     ports:
-      - "8080:8080"                  # Application port
+      - "8081:8081"                  # Application port
     environment:
       - SPRING_REDIS_HOST=redis      # Redis host
       - SPRING_RABBITMQ_HOST=rabbitmq # RabbitMQ host
@@ -51,7 +51,7 @@ services:
     image: quay.io/keycloak/keycloak:22.0.1 # Official Keycloak image
     container_name: starship-keycloak       # Container name
     ports:
-      - "8081:8080"                         # Keycloak port (changed to 8081 to avoid conflict with the app)
+      - "8080:8080"                         # Keycloak port (changed to 8081 to avoid conflict with the app)
     environment:
       KEYCLOAK_ADMIN: admin                 # Keycloak admin user
       KEYCLOAK_ADMIN_PASSWORD: admin        # Keycloak admin password

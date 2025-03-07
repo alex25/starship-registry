@@ -1,7 +1,7 @@
 Feature: Find Starship
 
   Background:
-    * url 'http://localhost:8080/starship-registry/v1/'
+    * url 'http://localhost:8081/starship-registry/v1/'
 
   Scenario: Successfully find a starship by ID
     Given path 'starships/2'

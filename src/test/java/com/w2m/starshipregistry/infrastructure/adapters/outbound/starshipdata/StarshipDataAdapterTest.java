@@ -106,7 +106,7 @@ public class StarshipDataAdapterTest {
         StarshipEntity starship = StarshipEntity.builder().id(1L).name("Enterprise").movie(movie).build();
 
         given(starshipRepository.findById(1L)).willReturn(Optional.of(starship));
-        
+
         // Act
         // Assert
         StarshipDtoNullable result = assertDoesNotThrow(() -> adapter.findStarshipById(1L));
@@ -124,16 +124,15 @@ public class StarshipDataAdapterTest {
         };
 
         // Assert
-        assertDoesNotThrow( exec);
+        assertDoesNotThrow(exec);
     }
 
     @Test
     void addNewStarship() {
         // Arrange
         MovieEntity movie = MovieEntity.builder().id(1L).title("Star Wars").build();
-        given(movieRepository.save(any())).willReturn(movie);
-        StarshipAddRequest starshipAddRequest = new StarshipAddRequest("Enterprise III", 
-        2L, "Starwars", 1986, false);
+        StarshipAddRequest starshipAddRequest = new StarshipAddRequest("Enterprise III",
+                2L, "Starwars", 1986, false);
         StarshipDto starshipResultDto = new StarshipDto(11L, "Enterprise III", MovieMapper.toDto(movie));
         given(starshipRepository.save(any())).willReturn(StarshipMapper.toEntity(starshipResultDto));
 
@@ -148,9 +147,8 @@ public class StarshipDataAdapterTest {
     void addNewStarshipDuplicateKeyException() {
         // Arrange
         MovieEntity movie = MovieEntity.builder().id(1L).title("Star Wars").build();
-        StarshipAddRequest starshipAddRequest = new StarshipAddRequest("Enterprise III", 
-        2L, "Starwars", 1986, false);
-        given(movieRepository.save(any())).willReturn(movie);
+        StarshipAddRequest starshipAddRequest = new StarshipAddRequest("Enterprise III",
+                2L, "Starwars", 1986, false);
         given(starshipRepository.save(any()))
                 .willThrow(new DataIntegrityViolationException("Database constraint violation"));
 
@@ -217,7 +215,7 @@ public class StarshipDataAdapterTest {
         // Act
 
         // Assert
-        assertThrows(StarshipNotFoundException.class,()-> adapter.deleteStarship(20L));
+        assertThrows(StarshipNotFoundException.class, () -> adapter.deleteStarship(20L));
     }
 
     @Test

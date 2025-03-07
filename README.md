@@ -87,12 +87,13 @@ This will start:
 ```bash
 mvn test          # Unit tests
 mvn verify        # Integration tests
+mvnw test -Dtest=IntegrationTestRunner -Dkarate.options=classpath:karate/starship-adding-karate.feature:7 # Example Specific case Integration, tests file: starship-adding-karate.feature, case line: 7
 ```
 
 ## Run with Docker
 ```
 docker build --pull --rm -f 'starship-registry\dockerfile' -t 'starshipregistry:latest' 'starship-registry'
-docker run -p 8080:8080 starshipregistry:latest
+docker run -p 8081:8081 starshipregistry:latest
 ```
 
 ## Running External Services
@@ -114,8 +115,6 @@ The application integrates with RabbitMQ for message queuing. You can start Rabb
 ```bash
 docker run -d --hostname rabbitmq --name rabbitmq -p 5672:5672 -p 15672:15672 rabbitmq:management
 ```
-
-- Access the RabbitMQ management console at `http://localhost:15672` (default credentials: `guest` / `guest`).
 
 ### Verifying Redis and RabbitMQ
 

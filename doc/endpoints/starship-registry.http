@@ -1,5 +1,5 @@
 @hostname = localhost
-@port = 8080
+@port = 8081
 @host = {{hostname}}:{{port}}
 @contextPath = starship-registry/v1
 
@@ -30,7 +30,7 @@ POST http://{{host}}/{{contextPath}}/starships
 Content-Type: application/json
 
 {
-  "name": "X-Wingoo",
+  "name": "X-Wingo V",
   "movieTitle": "Star Wars: A New Hope",
   "movieRelease": 1977,
   "isTvSeries": false
@@ -47,4 +47,4 @@ GET http://{{host}}/{{contextPath}}/swagger-ui.html
 
 ###
 # Health
-http://localhost:8081/monitor/health
+http://localhost:8082/monitor/health

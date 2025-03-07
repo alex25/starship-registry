@@ -25,9 +25,7 @@ public class AddStarshipUseCase implements AddStarshipPort {
             throw new StarshipDuplicatedException();
         }
         try {
-            StarshipDtoNullable result = starshipData.addNewStarship(starshipAddRequest);
-            return result;
-
+			return starshipData.addNewStarship(starshipAddRequest);
         } catch (DependencyConflictException e) {
             throw new StarshipDependencyException("Starship cannot be add due to existing dependencies", e);
         }

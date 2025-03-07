@@ -17,15 +17,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.server.ResponseStatusException;
 
 import com.w2m.starshipregistry.core.dtos.StarshipAddRequest;
-import com.w2m.starshipregistry.core.dtos.MovieDto;
 import com.w2m.starshipregistry.core.dtos.StarshipDto;
 import com.w2m.starshipregistry.core.dtos.StarshipDtoNullable;
 import com.w2m.starshipregistry.core.dtos.StarshipUpdateRequest;
-import com.w2m.starshipregistry.core.exceptions.StarshipConflictException;
-import com.w2m.starshipregistry.core.exceptions.StarshipNotFoundException;
 import com.w2m.starshipregistry.core.ports.inbound.AddStarshipPort;
 import com.w2m.starshipregistry.core.ports.inbound.DeleteStarshipPort;
 import com.w2m.starshipregistry.core.ports.inbound.FindAllStarshipPort;
@@ -33,7 +29,6 @@ import com.w2m.starshipregistry.core.ports.inbound.FindByIdStarshipPort;
 import com.w2m.starshipregistry.core.ports.inbound.FindByNameStarshipPort;
 import com.w2m.starshipregistry.core.ports.inbound.ModifyStarshipPort;
 import com.w2m.starshipregistry.infrastructure.adapters.inbound.dtos.PageResponse;
-import com.w2m.starshipregistry.infrastructure.adapters.outbound.starshipdata.exceptions.DependencyConflictException;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;

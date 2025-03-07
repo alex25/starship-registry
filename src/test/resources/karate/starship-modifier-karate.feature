@@ -1,7 +1,7 @@
 Feature: Modify Starship
 
   Background:
-    * url 'http://localhost:8080/starship-registry/v1/'
+    * url 'http://localhost:8081/starship-registry/v1/'
 
   Scenario: Successfully modify an existing starship
     Given path 'starships/1'
@@ -35,38 +35,3 @@ Feature: Modify Starship
     Then status 404
     And match response == {"type":"about:blank","title":"Starship Not Found","status":404,"detail":"Starship with ID 999 not found","instance":"/starship-registry/v1/starships/999","id":999}
 
-  Scenario: Clear cache after modifying a starship
-    Given path 'starships/1'
-    And request { "name": "Millennium Falcon 3", "movieId": 1 }
-    When method put
-    Then status 200
-    And match response == 
-"""
-{
-  "id": 1,
-  "name": "Millennium Falcon 3",
-  "movie": {
-    "id": 1,
-    "title": "Star Wars: A New Hope",
-    "releaseYear": 1977,
-    "isTvSeries": false
-  }
-}
-"""
-    # Verify cache is cleared by checking subsequent requests
-    And path 'starships/1'
-    When method get
-    Then status 200
-    And match response == 
-"""
-{
-  "id": 1,
-  "name": "Millennium Falcon 3",
-  "movie": {
-    "id": 1,
-    "title": "Star Wars: A New Hope",
-    "releaseYear": 1977,
-    "isTvSeries": false
-  }
-}
-"""

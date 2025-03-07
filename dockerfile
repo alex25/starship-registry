@@ -3,7 +3,7 @@ FROM eclipse-temurin:21 AS build
 
 # Variables de entorno que pueden ser definidas externamente al construir o ejecutar el contenedor
 ARG BASE_PATH='/v1/starshipdb'
-ARG APP_PORT='8080'
+ARG APP_PORT='8081'
 ARG APP_HOST='localhost'
 ARG DB_URL='jdbc:h2:mem:starshipdb'
 ARG DB_USER='admin'

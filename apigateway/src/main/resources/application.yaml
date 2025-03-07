@@ -1,0 +1,55 @@
+spring:
+    application:
+        name: apigateway
+    main:
+        web-application-type: reactive
+        allow-bean-definition-overriding: true
+
+    # Keycloak configuration
+    security:
+        oauth2:
+            resourceserver:
+                jwt:
+                    issuer-uri: http://localhost:8080/realms/starship-registry
+                    jwk-set-uri: http://localhost:8080/realms/starship-registry/protocol/openid-connect/certs
+                    client-id: api-gateway
+                    client-secret: 9XNIV8zXjkJa4QeMaEoX9rieD53tS5Su
+    # Cloud Gateway configuration
+    cloud:
+        gateway:
+            routes:
+                - id: starship-service
+                  uri: ${STARSHIP_SERVICE_URI:http://localhost:8081}
+                  predicates:
+                      - Path=/api/starship-registry/v1**
+                  filters:
+                      - StripPrefix=1
+
+# Server
+server:
+  port: ${SERVER_PORT:8888}
+
+
+
+# Actuator configuration
+management:
+    endpoints:
+        web:
+            exposure:
+                include: health,info
+            base-path: /monitor
+    server:
+        port: 8887
+    endpoint:
+        health:
+            show-details: always
+
+# Logging configuration
+logging:
+    level:
+        org:
+            springframework:
+                security: TRACE
+                web: TRACE
+    pattern:
+        console: "%d{HH:mm:ss} %highlight(%-5level) %logger{36} - %msg%n"

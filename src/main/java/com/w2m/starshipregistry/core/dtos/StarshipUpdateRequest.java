@@ -1,6 +1,6 @@
 package com.w2m.starshipregistry.core.dtos;
 
-import jakarta.validation.constraints.NotBlank;
+import java.io.Serializable;
 
-public record StarshipUpdateRequest(String name, Long movieId) {
+public record StarshipUpdateRequest(String name, Long movieId) implements Serializable {
 }

@@ -2,6 +2,7 @@ package com.w2m.starshipregistry.infrastructure.adapters.outbound.starshipdata;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -57,9 +58,14 @@ public class StarshipDataAdapter implements StarshipDataPort {
     @Override
     @Cacheable(value = "starshipById", unless = "#result.isNull()")
     public StarshipDtoNullable findStarshipById(Long id) {
-        return starshipRepository.findById(id)
-                .map(StarshipMapper::toDto)
-                .orElse(NOT_FOUND);
+        Optional<StarshipEntity> starshipEntity = starshipRepository.findById(id);
+        StarshipDtoNullable starshipDtoNullable;
+        if (starshipEntity.isEmpty()) {
+            starshipDtoNullable = NOT_FOUND;
+        } else {
+            starshipDtoNullable = StarshipMapper.toDto(starshipEntity.get());
+        }
+        return starshipDtoNullable;
     }
 
     @Override
@@ -68,35 +74,38 @@ public class StarshipDataAdapter implements StarshipDataPort {
     }
 
     @Override
-    @CacheEvict(value = {"starshipsByName", "starshipById", "allStarships"}, allEntries = true)
+    @CacheEvict(value = { "starshipsByName", "starshipById", "allStarships" }, allEntries = true)
     public StarshipDtoNullable addNewStarship(StarshipAddRequest starshipAddRequest) {
         MovieEntity movieEntity = MovieMapper.toEntity(starshipAddRequest);
         StarshipEntity starshipEntity = StarshipMapper.toEntity(starshipAddRequest);
-        try { 
-            if(movieEntity.getId() == null) {
-                movieEntity = movieRepository.save(movieEntity); 
-            }            
+        try {
+            if (movieEntity.getId() == null) {
+                movieEntity = movieRepository.save(movieEntity);
+            }
             starshipEntity.setMovie(movieEntity);
             starshipEntity = starshipRepository.save(starshipEntity);
             return StarshipMapper.toDto(starshipEntity);
         } catch (DataIntegrityViolationException e) {
-            throw new DependencyConflictException("Starship with ID %d cannot be added due to existing dependencies".formatted(starshipEntity.getId()), e);
+            throw new DependencyConflictException("Starship with ID %d cannot be added due to existing dependencies"
+                    .formatted(starshipEntity.getId()), e);
         }
     }
 
     @Override
-    @CacheEvict(value = {"starshipsByName", "starshipById", "allStarships"}, allEntries = true)
+    @CacheEvict(value = { "starshipsByName", "starshipById", "allStarships" }, allEntries = true)
     public StarshipDtoNullable save(StarshipDtoNullable starshipDto) {
         try {
             StarshipEntity savedStarship = starshipRepository.save(StarshipMapper.toEntity(starshipDto));
             return StarshipMapper.toDto(savedStarship);
         } catch (DataIntegrityViolationException e) {
-            throw new DependencyConflictException("Starship with ID %d cannot be modified due to existing dependencies".formatted(starshipDto.id()), e);
+            throw new DependencyConflictException(
+                    "Starship with ID %d cannot be modified due to existing dependencies".formatted(starshipDto.id()),
+                    e);
         }
     }
 
     @Override
-    @CacheEvict(value = {"starshipsByName", "starshipById", "allStarships"}, allEntries = true)
+    @CacheEvict(value = { "starshipsByName", "starshipById", "allStarships" }, allEntries = true)
     public void deleteStarship(Long id) {
         if (!starshipRepository.existsById(id)) {
             throw new StarshipNotFoundException(id);
@@ -105,7 +114,8 @@ public class StarshipDataAdapter implements StarshipDataPort {
         try {
             starshipRepository.deleteById(id);
         } catch (DataIntegrityViolationException e) {
-            throw new DependencyConflictException("Starship with ID %d cannot be deleted due to existing dependencies".formatted(id), e);
+            throw new DependencyConflictException(
+                    "Starship with ID %d cannot be deleted due to existing dependencies".formatted(id), e);
         }
     }
 
