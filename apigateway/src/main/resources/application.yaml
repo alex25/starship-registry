@@ -4,16 +4,13 @@ spring:
     main:
         web-application-type: reactive
         allow-bean-definition-overriding: true
-
     # Keycloak configuration
     security:
         oauth2:
             resourceserver:
                 jwt:
-                    issuer-uri: http://localhost:8080/realms/starship-registry
-                    jwk-set-uri: http://localhost:8080/realms/starship-registry/protocol/openid-connect/certs
-                    client-id: api-gateway
-                    client-secret: 9XNIV8zXjkJa4QeMaEoX9rieD53tS5Su
+                    issuer-uri: ${KEYCLOAK_SERVICE_URI:http://localhost:8080}/realms/starship-registry
+                    jwk-set-uri: ${KEYCLOAK_SERVICE_URI:http://localhost:8080}/realms/starship-registry/protocol/openid-connect/certs
     # Cloud Gateway configuration
     cloud:
         gateway:
@@ -21,13 +18,13 @@ spring:
                 - id: starship-service
                   uri: ${STARSHIP_SERVICE_URI:http://localhost:8081}
                   predicates:
-                      - Path=/api/starship-registry/v1**
+                      - Path= /api/starship-registry/v1/**
                   filters:
                       - StripPrefix=1
 
 # Server
 server:
-  port: ${SERVER_PORT:8888}
+  port: ${APP_PORT:8888}
 
 
 

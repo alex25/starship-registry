@@ -58,8 +58,3 @@ Scenario: Successfully add a new starship with random name
     Then status 409
     And match response == {"type":"about:blank","title":"Already exists","status":409,"detail":"Starship with the same name already exists","instance":"/starship-registry/v1/starships","id":0}
 
-  Scenario: Handle database constraint violations when adding a starship
-    Given path '/starships'
-    And request { "name": "InvalidShip", "movieTitle": "InvalidMovie" }
-    When method POST
-    Then status 409

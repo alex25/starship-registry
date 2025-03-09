@@ -10,17 +10,31 @@ services:
     ports:
       - "8081:8081"                  # Application port
     environment:
+      - TZ=America/Argentina/Buenos_Aires
       - SPRING_REDIS_HOST=redis      # Redis host
       - SPRING_RABBITMQ_HOST=rabbitmq # RabbitMQ host
-      - SPRING_PROFILES_ACTIVE=prod  # Spring Boot active profile
-      - KEYCLOAK_AUTH_SERVER_URL=http://keycloak:8080/auth/realms/master # Keycloak URL
-      - KEYCLOAK_REALM=master        # Default realm
-      - KEYCLOAK_CLIENT_ID=starship-client # Client ID
-      - KEYCLOAK_CLIENT_SECRET=secret # Client secret (configure in Keycloak)
+      - SPRING_PROFILES_ACTIVE=dev  # Spring Boot active profile
     depends_on:
       - redis                        # Ensure Redis is available before starting the app
       - rabbitmq                     # Ensure RabbitMQ is available before starting the app
       - keycloak                     # Ensure Keycloak is available before starting the app
+      - apigateway                   # Ensure apigateway is available before starting the app
+    networks:
+      - starship-network             # Common network for all services
+
+  # Service for apigateway
+  apigateway:
+    build:
+      context: ./apigateway/.        # Use the Dockerfile in the current directory
+      dockerfile: Dockerfile         # Name of the Dockerfile
+    container_name: apigateway-app     # Container name
+    ports:
+      - "8888:8888"                  # Application port
+    environment:
+      - TZ=America/Argentina/Buenos_Aires
+      - KEYCLOAK_SERVICE_URI=keycloak # Keycloak uri
+      - STARSHIP_SERVICE_URI=app # Starship-registry uri
+      - APP_PORT=8888  # Spring Boot active profile
     networks:
       - starship-network             # Common network for all services
 
@@ -41,6 +55,7 @@ services:
       - "5672:5672"                  # RabbitMQ port for messaging
       - "15672:15672"                # RabbitMQ management web interface port
     environment:
+      TZ: America/Argentina/Buenos_Aires
       RABBITMQ_DEFAULT_USER: admin   # Default RabbitMQ user
       RABBITMQ_DEFAULT_PASS: password # Default RabbitMQ password
     networks:
@@ -51,8 +66,9 @@ services:
     image: quay.io/keycloak/keycloak:22.0.1 # Official Keycloak image
     container_name: starship-keycloak       # Container name
     ports:
-      - "8080:8080"                         # Keycloak port (changed to 8081 to avoid conflict with the app)
+      - "8080:8080"                         # Keycloak port 
     environment:
+      TZ: America/Argentina/Buenos_Aires
       KEYCLOAK_ADMIN: admin                 # Keycloak admin user
       KEYCLOAK_ADMIN_PASSWORD: admin        # Keycloak admin password
       KC_HTTP_ENABLED: true                 # Enable HTTP (use HTTPS in production)

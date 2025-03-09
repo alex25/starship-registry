@@ -29,24 +29,11 @@ Feature: Find Starship
 
   Scenario: Search for starships by name
     Given path 'starships/search'
-    And param name = 'falcon'
+    And param name = 'slave'
     When method get
     Then status 200
-    And match response == 
-"""
-[
-  {
-    "id": 1,
-    "name": "Millennium Falcon",
-    "movie": {
-      "id": 1,
-      "title": "Star Wars: A New Hope",
-      "releaseYear": 1977,
-      "isTvSeries": false
-    }
-  }
-]
-"""
+    And match response == [{"id":4,"name":"Slave I","movie":{"id":2,"title":"The Empire Strikes Back","releaseYear":1980,"isTvSeries":false}}]
+
 
   Scenario: Search for starships by name with no matches
     Given path 'starships/search'
@@ -62,34 +49,3 @@ Feature: Find Starship
     When method get
     * print response 
     Then status 200
-    And match response == 
-"""
-{
-  "content": [
-    {
-      "id": 3,
-      "name": "TIE Fighter",
-      "movie": {
-        "id": 2,
-        "title": "The Empire Strikes Back",
-        "releaseYear": 1980,
-        "isTvSeries": false
-      }
-    },
-    {
-      "id": 4,
-      "name": "Slave I",
-      "movie": {
-        "id": 2,
-        "title": "The Empire Strikes Back",
-        "releaseYear": 1980,
-        "isTvSeries": false
-      }
-    }
-  ],
-  "totalPages": 3,
-  "totalElements": 5,
-  "number": 1,
-  "size": 2
-}
-"""

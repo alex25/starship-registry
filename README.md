@@ -87,7 +87,7 @@ This will start:
 ```bash
 mvn test          # Unit tests
 mvn verify        # Integration tests
-mvnw test -Dtest=IntegrationTestRunner -Dkarate.options=classpath:karate/starship-adding-karate.feature:7 # Example Specific case Integration, tests file: starship-adding-karate.feature, case line: 7
+mvn test -Dtest=IntegrationTestRunner -Dkarate.options=classpath:karate/starship-adding-karate.feature:7 # Example Specific case Integration, tests file: starship-adding-karate.feature, case line: 7
 ```
 
 ## Run with Docker
@@ -131,6 +131,38 @@ You can verify that Redis and RabbitMQ are running correctly:
 
 - For RabbitMQ:
   Open the management console at `http://localhost:15672` and log in with the default credentials (`guest` / `guest`).
+
+### Manage Database
+
+Open the management console at http://localhost:8081/starship-registry/v1/h2-console
+
+### keycloak Required Configuration
+
+Open the management console at http://localhost:8080/admin
+- User/pass: admin/admin
+
+- Create Realm: Starship-registry
+- Create client: 
+  - Client ID: api-gateway
+  - Credetials: Regenerate Client secret (client_secret)
+- Create User:
+    - Username: user (username)
+    - Credentials: set password user123 (password)
+
+Execution request example:
+```
+###
+# keycloak login
+POST http://localhost:8080/realms/starship-registry/protocol/openid-connect/token
+Content-Type:application/x-www-form-urlencoded
+
+grant_type=password&client_id=api-gateway&username=user&password=user123&client_secret=uczeS2BlcYNdcLmaOEv8vcQaqxwc10du
+
+####
+# find by id
+GET http://{{host}}/{{contextPath}}/starships/2
+Authorization: Bearer {{keycloakToken.response.body.access_token}}
+```
 
 ## Useful Resources
 

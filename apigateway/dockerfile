@@ -2,20 +2,14 @@
 FROM eclipse-temurin:21 AS build
 
 # Environment variables that can be defined externally during build or container execution
-ARG BASE_PATH='/v1/starshipdb'
-ARG APP_PORT='8081'
-ARG APP_HOST='localhost'
-ARG DB_URL='jdbc:h2:mem:starshipdb'
-ARG DB_USER='admin'
-ARG DB_PASS='admin'
+ARG KEYCLOAK_SERVICE_URI='http://localhost:8080'
+ARG STARSHIP_SERVICE_URI='http://localhost:8081'
+ARG APP_PORT='8888'
 
 # Set application environment variables (overridable)
-ENV BASE_PATH=${BASE_PATH}
+ENV KEYCLOAK_SERVICE_URI=${KEYCLOAK_SERVICE_URI}
+ENV STARSHIP_SERVICE_URI=${STARSHIP_SERVICE_URI}
 ENV APP_PORT=${APP_PORT}
-ENV APP_HOST=${APP_HOST}
-ENV DB_URL=${DB_URL}
-ENV DB_USER=${DB_USER}
-ENV DB_PASS=${DB_PASS}
 
 # Set working directory and copy project files
 WORKDIR /usr/src/app
