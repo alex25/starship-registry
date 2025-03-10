@@ -1,6 +1,6 @@
 # Starship Registry
 
-A Spring Boot demonstration project for managing starship registrations and information.
+A Spring Boot demostration project for managing movies starship registrations and information.
 
 ## Requirements
 
