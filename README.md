@@ -81,6 +81,7 @@ This will start:
 - Redis for caching
 - RabbitMQ for messaging
 - Keycloak for authentication
+- Apigateway for secure access
 
 ### Run unit tests and integration tests
 
