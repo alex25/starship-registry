@@ -18,10 +18,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.w2m.starshipregistry.core.dtos.StarshipAddRequest;
-import com.w2m.starshipregistry.core.dtos.StarshipDto;
-import com.w2m.starshipregistry.core.dtos.StarshipDtoNullable;
-import com.w2m.starshipregistry.core.dtos.StarshipUpdateRequest;
+import com.w2m.starshipregistry.core.dto.StarshipAddRequest;
+import com.w2m.starshipregistry.core.dto.StarshipDto;
+import com.w2m.starshipregistry.core.dto.StarshipDtoNullable;
+import com.w2m.starshipregistry.core.dto.StarshipUpdateRequest;
 import com.w2m.starshipregistry.core.ports.inbound.AddStarshipPort;
 import com.w2m.starshipregistry.core.ports.inbound.DeleteStarshipPort;
 import com.w2m.starshipregistry.core.ports.inbound.FindAllStarshipPort;
@@ -116,7 +116,7 @@ public class StarshipController {
     @Operation(summary = "Add a new starship", description = "Adds a new starship to the system and clears related caches")
     @ApiResponse(responseCode = "201", description = "Starship added successfully", content = @io.swagger.v3.oas.annotations.media.Content(mediaType = "application/json"))
     @ApiResponse(responseCode = "409", description = "Starship with the same name already exists", content = @io.swagger.v3.oas.annotations.media.Content(mediaType = "application/json"))
-    public ResponseEntity<StarshipDtoNullable> addStarship(@RequestBody @Valid StarshipAddRequest addStarshipRequest) {
+    public ResponseEntity<StarshipDtoNullable> addStarship(@Valid @RequestBody StarshipAddRequest addStarshipRequest) {
         StarshipDtoNullable result = addStarshipPort.execute(addStarshipRequest);
         return ResponseEntity.status(HttpStatus.CREATED).body(result); // 201 Created
 

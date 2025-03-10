@@ -164,6 +164,22 @@ GET http://{{host}}/{{contextPath}}/starships/2
 Authorization: Bearer {{keycloakToken.response.body.access_token}}
 ```
 
+## Database diagram
+![DER](doc/der.png)
+
+## Secuence diagrams 
+- [starship-finder](doc/bdd-specs/starship-finder.png)
+
+- [starship-adding](doc/bdd-specs/starship-adding.png)
+
+- [starship-remover](doc/bdd-specs/starship-remover.png)
+
+- [starship-modifier](doc/bdd-specs/starship-modifier.png)
+
+## Endpoints
+- [starship-registry](doc/endpoints/starship-registry.http)
+- [apigateway](apigateway/endpoints/apigateway.http)
+
 ## Useful Resources
 
 - [Spring Boot Documentation](https://docs.spring.io/spring-boot/docs/current/reference/html/)

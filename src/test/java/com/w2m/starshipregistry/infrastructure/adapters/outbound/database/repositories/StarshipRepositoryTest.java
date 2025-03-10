@@ -30,7 +30,7 @@ public class StarshipRepositoryTest {
     private MovieRepository movieRepository;
 
     @Test
-    void findAllPaged() {
+    void findAllPagedSuccess() {
         Pageable pageable = PageRequest.of(0, 2);
         Page<StarshipEntity> starshipPaged = starshipRepository.findAll(pageable);
 
@@ -38,21 +38,21 @@ public class StarshipRepositoryTest {
     }
 
     @Test
-    void findByid() {
+    void findByidSuccess() {
         Optional<StarshipEntity> starship = starshipRepository.findById(2L);
 
         assertEquals("X-Wing", starship.get().getName());
     }
 
     @Test
-    void findByNameContainingIgnoreCase() {
+    void findByNameContainingIgnoreCaseSuccess() {
         List<StarshipEntity> starshipList = starshipRepository.findByNameContainingIgnoreCase("wing");
 
         assertEquals("X-Wing", starshipList.getFirst().getName());
     }
 
     @Test
-    void addNewStarship() {
+    void addNewStarshipSuccess() {
 
         MovieEntity movie = MovieEntity.builder().title("Star Trek").releaseYear(1979).isTvSeries(false).build();
         movie = movieRepository.save(movie);
@@ -64,7 +64,7 @@ public class StarshipRepositoryTest {
     }
 
     @Test
-    void modifyStarship() {
+    void modifyStarshipSuccess() {
 
         List<StarshipEntity> starshipList = starshipRepository.findByNameContainingIgnoreCase("X-Wing");
         StarshipEntity starshipEntity = starshipList.getFirst();
@@ -76,7 +76,7 @@ public class StarshipRepositoryTest {
     }
 
     @Test
-    void deleteStarship() {
+    void deleteStarshipSuccess() {
 
         List<StarshipEntity> starshipList = starshipRepository.findByNameContainingIgnoreCase("X-Wing");
         StarshipEntity starshipEntity = starshipList.getFirst();

@@ -2,8 +2,8 @@ package com.w2m.starshipregistry.core.usecase;
 
 import org.springframework.stereotype.Service;
 
-import com.w2m.starshipregistry.core.dtos.StarshipDtoNullable;
-import com.w2m.starshipregistry.core.dtos.StarshipUpdateRequest;
+import com.w2m.starshipregistry.core.dto.StarshipDtoNullable;
+import com.w2m.starshipregistry.core.dto.StarshipUpdateRequest;
 import com.w2m.starshipregistry.core.exceptions.StarshipDependencyException;
 import com.w2m.starshipregistry.core.exceptions.StarshipDuplicatedException;
 import com.w2m.starshipregistry.core.exceptions.StarshipNotFoundException;
@@ -27,7 +27,7 @@ public class ModifyStarshipFromMqUseCase implements ModifyStarshipFromMqPort {
             throw new StarshipNotFoundException(id);
         }
 
-        // Verify if starship with the same name already exists"
+        // Verify if starship with the same name already exists
         if (!starshipDto.name().equals(updateRequest.name())
             && starshipDataPort.existsByName(updateRequest.name())) {
             throw new StarshipDuplicatedException(id);

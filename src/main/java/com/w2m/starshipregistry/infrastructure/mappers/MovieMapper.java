@@ -1,14 +1,14 @@
 package com.w2m.starshipregistry.infrastructure.mappers;
 
-import com.w2m.starshipregistry.core.dtos.MovieDto;
-import com.w2m.starshipregistry.core.dtos.MovieDtoNullable;
-import com.w2m.starshipregistry.core.dtos.StarshipAddRequest;
+import com.w2m.starshipregistry.core.dto.MovieDtoNullable;
+import com.w2m.starshipregistry.core.dto.StarshipAddRequest;
+import com.w2m.starshipregistry.core.dto.factories.MovieDtoFactory;
 import com.w2m.starshipregistry.infrastructure.adapters.outbound.database.entities.MovieEntity;
 
 public class MovieMapper {
 
     public static MovieDtoNullable toDto(MovieEntity entity) {
-        return new MovieDto(
+        return MovieDtoFactory.create(
                 entity.getId(),
                 entity.getTitle(),
                 entity.getReleaseYear(),

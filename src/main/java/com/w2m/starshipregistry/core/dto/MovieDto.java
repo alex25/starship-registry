@@ -1,12 +1,14 @@
-package com.w2m.starshipregistry.core.dtos;
+package com.w2m.starshipregistry.core.dto;
 
 import java.io.Serializable;
+
+import com.w2m.starshipregistry.core.dto.factories.MovieDtoFactory;
 
 public record MovieDto(Long id, String title, Integer releaseYear, Boolean isTvSeries)
         implements Serializable, MovieDtoNullable {
 
-    public static MovieDto fromMovieParent(MovieDtoNullable movieParent) {
-        return new MovieDto(
+    public static MovieDtoNullable fromMovieParent(MovieDtoNullable movieParent) {
+        return MovieDtoFactory.create(
                 movieParent.id(),
                 movieParent.title(),
                 movieParent.releaseYear(),

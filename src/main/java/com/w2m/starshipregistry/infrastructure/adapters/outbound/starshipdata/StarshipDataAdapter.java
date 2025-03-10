@@ -12,9 +12,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.w2m.starshipregistry.core.dtos.NullStarshipDto;
-import com.w2m.starshipregistry.core.dtos.StarshipAddRequest;
-import com.w2m.starshipregistry.core.dtos.StarshipDtoNullable;
+import com.w2m.starshipregistry.core.dto.NullStarshipDto;
+import com.w2m.starshipregistry.core.dto.StarshipAddRequest;
+import com.w2m.starshipregistry.core.dto.StarshipDtoNullable;
 import com.w2m.starshipregistry.core.exceptions.StarshipNotFoundException;
 import com.w2m.starshipregistry.core.ports.outbound.StarshipDataPort;
 import com.w2m.starshipregistry.infrastructure.adapters.outbound.database.entities.MovieEntity;

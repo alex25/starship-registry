@@ -11,19 +11,24 @@ import org.springframework.stereotype.Component;
 @Component
 public class StarshipLoggingAspect {
 
-    private static final Logger logger = LoggerFactory.getLogger(StarshipLoggingAspect.class);
+    private final Logger logger;
 
-    // Define el punto de corte: métodos que buscan una nave por ID
-    @Pointcut("execution(* com.w2m.starshipregistry.core.ports.inbound.FindByIdStarshipPort.execute(..)) && args(id)")
-    public void findByIdStarshipPortExecution(Long id) {
-        // Punto de corte vacío
+    public StarshipLoggingAspect(Logger logger) {
+        this.logger = logger;
     }
 
-    // Antes de ejecutar el método, verifica si el ID es negativo
+    public StarshipLoggingAspect() {
+        this.logger = LoggerFactory.getLogger(StarshipLoggingAspect.class);
+    }
+
+    @Pointcut("execution(* com.w2m.starshipregistry.core.ports.inbound.FindByIdStarshipPort.execute(..)) && args(id)")
+    public void findByIdStarshipPortExecution(Long id) {
+    }
+
     @Before("findByIdStarshipPortExecution(id)")
     public void logNegativeId(Long id) {
         if (id < 0) {
-            logger.warn("Se ha solicitado una nave con un ID negativo: {}", id);
+            logger.warn("Starship request with negative ID: {}", id);
         }
     }
 }

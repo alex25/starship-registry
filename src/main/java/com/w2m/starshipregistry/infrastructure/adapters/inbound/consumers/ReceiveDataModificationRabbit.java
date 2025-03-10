@@ -3,7 +3,7 @@ package com.w2m.starshipregistry.infrastructure.adapters.inbound.consumers;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Service;
 
-import com.w2m.starshipregistry.core.dtos.StarshipUpdateRequest;
+import com.w2m.starshipregistry.core.dto.StarshipUpdateRequest;
 import com.w2m.starshipregistry.core.ports.inbound.ModifyStarshipFromMqPort;
 import com.w2m.starshipregistry.infrastructure.adapters.inbound.dtos.StarshipDataModificationRequest;
 

@@ -1,4 +1,4 @@
-package com.w2m.starshipregistry.core.dtos;
+package com.w2m.starshipregistry.core.dto;
 
 public record NullMovieDto() implements MovieDtoNullable {
 

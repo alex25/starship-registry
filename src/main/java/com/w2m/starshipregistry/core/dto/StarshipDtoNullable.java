@@ -1,4 +1,4 @@
-package com.w2m.starshipregistry.core.dtos;
+package com.w2m.starshipregistry.core.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -17,4 +17,5 @@ public interface StarshipDtoNullable {
     StarshipDtoNullable updateName(String name);
     StarshipDtoNullable updateMovieId(Long movieId);
     StarshipDtoNullable withMovie(MovieDtoNullable newMovie);
+
 }

@@ -9,7 +9,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import com.w2m.starshipregistry.core.dtos.StarshipUpdateRequest;
+import com.w2m.starshipregistry.core.dto.StarshipUpdateRequest;
 import com.w2m.starshipregistry.core.ports.inbound.ModifyStarshipFromMqPort;
 import com.w2m.starshipregistry.infrastructure.adapters.inbound.dtos.StarshipDataModificationRequest;
 
@@ -23,7 +23,7 @@ public class ReceiveDataModificationRabbitTest {
     private ReceiveDataModificationRabbit consumer;
 
     @Test
-    void testReceiveMessage() {
+    void receiveMessageOk() {
         // Arrange
         StarshipDataModificationRequest message = 
             new StarshipDataModificationRequest(1L, "Enterprise XI", 101L);

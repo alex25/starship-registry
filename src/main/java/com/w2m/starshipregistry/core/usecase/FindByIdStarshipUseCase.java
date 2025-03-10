@@ -3,7 +3,7 @@ package com.w2m.starshipregistry.core.usecase;
 import com.w2m.starshipregistry.core.ports.inbound.FindByIdStarshipPort;
 import org.springframework.stereotype.Service;
 
-import com.w2m.starshipregistry.core.dtos.StarshipDtoNullable;
+import com.w2m.starshipregistry.core.dto.StarshipDtoNullable;
 import com.w2m.starshipregistry.core.exceptions.StarshipNotFoundException;
 import com.w2m.starshipregistry.core.ports.outbound.StarshipDataPort;
 

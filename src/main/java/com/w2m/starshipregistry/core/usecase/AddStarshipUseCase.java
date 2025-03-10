@@ -3,8 +3,8 @@ package com.w2m.starshipregistry.core.usecase;
 import com.w2m.starshipregistry.core.ports.inbound.AddStarshipPort;
 import org.springframework.stereotype.Service;
 
-import com.w2m.starshipregistry.core.dtos.StarshipAddRequest;
-import com.w2m.starshipregistry.core.dtos.StarshipDtoNullable;
+import com.w2m.starshipregistry.core.dto.StarshipAddRequest;
+import com.w2m.starshipregistry.core.dto.StarshipDtoNullable;
 import com.w2m.starshipregistry.core.exceptions.StarshipDependencyException;
 import com.w2m.starshipregistry.core.exceptions.StarshipDuplicatedException;
 import com.w2m.starshipregistry.core.ports.outbound.StarshipDataPort;

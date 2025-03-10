@@ -1,11 +1,11 @@
 package com.w2m.starshipregistry.core.usecase;
 
+import com.w2m.starshipregistry.core.dto.StarshipDtoNullable;
 import com.w2m.starshipregistry.core.ports.inbound.FindAllStarshipPort;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import com.w2m.starshipregistry.core.dtos.StarshipDtoNullable;
 import com.w2m.starshipregistry.core.ports.outbound.StarshipDataPort;
 
 import lombok.RequiredArgsConstructor;
@@ -20,6 +20,5 @@ public class FindAllStarshipUseCase implements FindAllStarshipPort {
     public Page<StarshipDtoNullable> execute(Pageable pageable) {
         return starshipData.findAllStarships(pageable);
     }
-
 
 }

@@ -4,7 +4,7 @@ title Feature: Add New Starship
 actor User
 participant "StarshipController" as Controller
 participant "AddNewStarshipUseCase" as UseCase
-participant "StarshipData" as DataAdapter
+participant "StarshipDataAdapter" as DataAdapter
 participant "StarshipRepository" as Repository
 participant "CacheManager" as Cache
 
