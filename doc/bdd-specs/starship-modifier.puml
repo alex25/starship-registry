@@ -1,0 +1,55 @@
+@startuml
+title Use case Modify Starship Feature
+
+actor User
+participant "StarshipController" as Controller
+participant "ModifyUseCase" as Modify
+participant "StarshipDataAdapter" as Service
+participant "StarshipRepository" as Repository
+participant "CacheManager" as Cache
+
+== Scenario 1: Successfully modify an existing starship ==
+User -> Controller: Request to modify starship (ID, new details)
+Controller -> Modify: executeModifyStarship(ID, new details)
+Modify -> Service: callUpdateStarship(ID, new details)
+Service -> Repository: Save updated starship entity
+Repository --> Service: Return updated entity
+Service -> Cache: Clear caches ("starshipsByName", "starshipById", "allStarships")
+Cache --> Service: Caches cleared
+Service --> Modify: Return success response
+Modify --> Controller: Return processed result
+Controller --> User: Display updated starship details
+
+== Scenario 2: Attempt to modify a starship with a duplicate name ==
+User -> Controller: Request to modify starship (ID, duplicate name)
+Controller -> Modify: executeModifyStarship(ID, duplicate name)
+Modify -> Service: callUpdateStarship(ID, duplicate name)
+Service -> Repository: Save updated starship entity
+Repository --> Service: Throw DuplicateKeyException
+Service --> Modify: Return error response
+Modify --> Controller: Return formatted error
+Controller --> User: Display error message "Starship with the same name already exists"
+
+== Scenario 3: Attempt to modify a non-existent starship ==
+User -> Controller: Request to modify starship (non-existent ID, new details)
+Controller -> Modify: executeModifyStarship(invalid ID, new details)
+Modify -> Service: callUpdateStarship(invalid ID, new details)
+Service -> Repository: Save updated starship entity
+Repository --> Service: Throw EntityNotFoundException
+Service --> Modify: Return error response
+Modify --> Controller: Return formatted error
+Controller --> User: Display error message "Starship with ID not found"
+
+== Scenario 4: Clear cache after modifying a starship ==
+User -> Controller: Request to modify starship (ID, new details)
+Controller -> Modify: executeModifyStarship(ID, new details)
+Modify -> Service: callUpdateStarship(ID, new details)
+Service -> Repository: Save updated starship entity
+Repository --> Service: Return updated entity
+Service -> Cache: Clear caches ("starshipsByName", "starshipById", "allStarships")
+Cache --> Service: Caches cleared
+Service --> Modify: Return success response
+Modify --> Controller: Return confirmation
+Controller --> User: Confirm modification and cache cleared
+
+@enduml

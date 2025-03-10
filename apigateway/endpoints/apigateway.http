@@ -1,0 +1,63 @@
+@hostname = localhost
+@port = 8888
+@host = {{hostname}}:{{port}}
+@contextPath = api/starship-registry/v1
+
+
+###
+# keycloak login
+# @name keycloakToken
+POST http://localhost:8080/realms/starship-registry/protocol/openid-connect/token
+Content-Type:application/x-www-form-urlencoded
+
+grant_type=password&client_id=api-gateway&username=user&password=user123&client_secret=uczeS2BlcYNdcLmaOEv8vcQaqxwc10du
+
+
+####
+# find by id
+GET http://{{host}}/{{contextPath}}/starships/2
+Authorization: Bearer {{keycloakToken.response.body.access_token}}
+
+###
+# find by name
+GET http://{{host}}/{{contextPath}}/starships/search?name=Unknown
+Authorization: Bearer {{keycloakToken.response.body.access_token}}
+
+####
+# find all
+GET http://{{host}}/{{contextPath}}/starships?page=1&size=2
+Authorization: Bearer {{keycloakToken.response.body.access_token}}
+
+###
+# modify an existing starship
+PUT http://{{host}}/{{contextPath}}/starships/1
+Authorization: Bearer {{keycloakToken.response.body.access_token}}
+Content-Type: application/json
+
+{ "name": "Millennium Falcon 3", "movieId": 1 }
+
+
+###
+# add a new starship
+POST http://{{host}}/{{contextPath}}/starships
+Authorization: Bearer {{keycloakToken.response.body.access_token}}
+
+{
+  "name": "X-Wingo VI",
+  "movieTitle": "Star Wars: A New Hope",
+  "movieRelease": 1977,
+  "isTvSeries": false
+  }
+}
+
+###
+# openapi doc
+GET http://{{host}}/{{contextPath}}/api-docs
+
+###
+# Swagger ui
+GET http://{{host}}/{{contextPath}}/swagger-ui.html
+
+###
+# Health
+http://localhost:8887/monitor/health

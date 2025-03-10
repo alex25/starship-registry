@@ -1,6 +1,7 @@
 package com.w2m.starshipregistry.infrastructure.adapters.outbound.starshipdata;
 
 import static org.assertj.core.api.Assertions.assertThatNoException;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -26,15 +27,17 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
+import com.w2m.starshipregistry.core.dto.StarshipAddRequest;
+import com.w2m.starshipregistry.core.dto.StarshipDtoNullable;
+import com.w2m.starshipregistry.core.dto.factories.StarshipDtoFactory;
+import com.w2m.starshipregistry.core.exceptions.StarshipNotFoundException;
 import com.w2m.starshipregistry.infrastructure.adapters.outbound.database.entities.MovieEntity;
 import com.w2m.starshipregistry.infrastructure.adapters.outbound.database.entities.StarshipEntity;
 import com.w2m.starshipregistry.infrastructure.adapters.outbound.database.repositories.MovieRepository;
 import com.w2m.starshipregistry.infrastructure.adapters.outbound.database.repositories.StarshipRepository;
 import com.w2m.starshipregistry.infrastructure.adapters.outbound.starshipdata.exceptions.DependencyConflictException;
-import com.w2m.starshipregistry.infrastructure.dto.MovieDto;
-import com.w2m.starshipregistry.infrastructure.dto.StarshipDto;
-
-import jakarta.persistence.EntityNotFoundException;
+import com.w2m.starshipregistry.infrastructure.mappers.MovieMapper;
+import com.w2m.starshipregistry.infrastructure.mappers.StarshipMapper;
 
 @ExtendWith(MockitoExtension.class)
 public class StarshipDataAdapterTest {
@@ -49,7 +52,7 @@ public class StarshipDataAdapterTest {
     MovieRepository movieRepository;
 
     @Test
-    void findStarship() {
+    void findStarshipSuccess() {
         MovieEntity movie = MovieEntity.builder().id(1L).title("Star Wars").build();
         StarshipEntity starship = StarshipEntity.builder().id(1L).name("Enterprise").movie(movie).build();
         List<StarshipEntity> response = List.of(starship);
@@ -57,16 +60,16 @@ public class StarshipDataAdapterTest {
         given(starshipRepository.findByNameContainingIgnoreCase(any())).willReturn(response);
 
         // Act
-        List<StarshipDto> result = adapter.searchStarshipsByName("Enterprise");
+        List<StarshipDtoNullable> result = adapter.searchStarshipsByName("Enterprise");
 
         // Assert
-        assertEquals(List.of(new StarshipDto(1L, "Enterprise", new MovieDto(movie))), result);
+        assertEquals(List.of(StarshipDtoFactory.create(1L, "Enterprise", MovieMapper.toDto(movie))), result);
     }
 
     @Test
-    void searchStarshipsByNameWithNullName() {
+    void searchStarshipsByNameWithNullNameSuccess() {
         // Act
-        List<StarshipDto> result = adapter.searchStarshipsByName(null);
+        List<StarshipDtoNullable> result = adapter.searchStarshipsByName(null);
 
         // Assert
         assertTrue(result.isEmpty());
@@ -74,7 +77,7 @@ public class StarshipDataAdapterTest {
     }
 
     @Test
-    void findAllStarships() {
+    void findAllStarshipsSuccess() {
         // Arrange
         Pageable pageable = PageRequest.of(0, 10);
         MovieEntity movie = MovieEntity.builder().id(1L).title("Star Wars").build();
@@ -87,13 +90,13 @@ public class StarshipDataAdapterTest {
         given(starshipRepository.findAll(pageable)).willReturn(starshipPage);
 
         // Act
-        Page<StarshipDto> result = adapter.findAllStarships(pageable);
+        Page<StarshipDtoNullable> result = adapter.findAllStarships(pageable);
 
         // Assert
         assertEquals(2, result.getTotalElements());
         assertEquals(2, result.getContent().size());
-        assertEquals(new StarshipDto(1L, "Enterprise", new MovieDto(movie)), result.getContent().get(0));
-        assertEquals(new StarshipDto(2L, "Millennium Falcon", new MovieDto(movie)), result.getContent().get(1));
+        assertEquals(StarshipDtoFactory.create(1L, "Enterprise", MovieMapper.toDto(movie)), result.getContent().get(0));
+        assertEquals(StarshipDtoFactory.create(2L, "Millennium Falcon", MovieMapper.toDto(movie)), result.getContent().get(1));
     }
 
     @Test
@@ -105,11 +108,9 @@ public class StarshipDataAdapterTest {
         given(starshipRepository.findById(1L)).willReturn(Optional.of(starship));
 
         // Act
-        Optional<StarshipDto> result = adapter.findStarshipById(1L);
-
         // Assert
-        assertTrue(result.isPresent());
-        assertEquals(new StarshipDto(1L, "Enterprise", new MovieDto(movie)), result.get());
+        StarshipDtoNullable result = assertDoesNotThrow(() -> adapter.findStarshipById(1L));
+        assertEquals(StarshipDtoFactory.create(1L, "Enterprise", MovieMapper.toDto(movie)), result);
     }
 
     @Test
@@ -118,79 +119,80 @@ public class StarshipDataAdapterTest {
         given(starshipRepository.findById(999L)).willReturn(Optional.empty());
 
         // Act
-        Optional<StarshipDto> result = adapter.findStarshipById(999L);
+        Executable exec = () -> {
+            adapter.findStarshipById(999L);
+        };
 
         // Assert
-        assertTrue(result.isEmpty());
+        assertDoesNotThrow(exec);
     }
 
     @Test
-    void addNewStarship() {
+    void addNewStarshipSuccess() {
         // Arrange
         MovieEntity movie = MovieEntity.builder().id(1L).title("Star Wars").build();
-        given(movieRepository.save(any())).willReturn(movie);
-        StarshipDto starshipDto = new StarshipDto(0L, "Enterprise III", new MovieDto(movie));
-        StarshipDto starshipResultDto = new StarshipDto(11L, "Enterprise III", new MovieDto(movie));
-        given(starshipRepository.save(any())).willReturn(starshipResultDto.toEntity());
+        StarshipAddRequest starshipAddRequest = new StarshipAddRequest("Enterprise III",
+                2L, "Starwars", 1986, false);
+        StarshipDtoNullable starshipResultDto = StarshipDtoFactory.create(11L, "Enterprise III", MovieMapper.toDto(movie));
+        given(starshipRepository.save(any())).willReturn(StarshipMapper.toEntity(starshipResultDto));
 
         // Act
-        StarshipEntity result = adapter.addNewStarship(starshipDto);
+        StarshipDtoNullable result = adapter.addNewStarship(starshipAddRequest);
 
         // Assert
-        assertNotNull(result.getId());
+        assertNotNull(result.id());
     }
 
     @Test
     void addNewStarshipDuplicateKeyException() {
         // Arrange
-        MovieEntity movie = MovieEntity.builder().id(1L).title("Star Wars").build();
-        given(movieRepository.save(any())).willReturn(movie);
-        StarshipDto starshipDto = new StarshipDto(0L, "X-Wing", new MovieDto(movie));
+        StarshipAddRequest starshipAddRequest = new StarshipAddRequest("Enterprise III",
+                2L, "Starwars", 1986, false);
         given(starshipRepository.save(any()))
                 .willThrow(new DataIntegrityViolationException("Database constraint violation"));
 
         // Act
         Executable exec = () -> {
-            adapter.addNewStarship(starshipDto);
+            adapter.addNewStarship(starshipAddRequest);
         };
 
         // Assert
-        assertThrows(DataIntegrityViolationException.class, exec);
+        assertThrows(DependencyConflictException.class, exec);
     }
 
     @Test
-    void modifyStarship() {
+    void modifyStarshipSuccess() {
         // Arrange
         MovieEntity movie = MovieEntity.builder().id(1L).title("Star Wars").build();
-        StarshipDto starshipDto = new StarshipDto(1L, "Storm Shadow", new MovieDto(movie));
-        given(starshipRepository.save(any())).willReturn(starshipDto.toEntity());
+        StarshipDtoNullable starshipDto = StarshipDtoFactory.create(1L, "Storm Shadow", MovieMapper.toDto(movie));
+        given(starshipRepository.save(any())).willReturn(StarshipMapper.toEntity(starshipDto));
 
         // Act
-        StarshipEntity result = adapter.modifyStarship(starshipDto);
+        StarshipDtoNullable result = adapter.save(starshipDto);
 
         // Assert
-        assertNotNull(result.getId());
+        assertNotNull(result.id());
     }
 
     @Test
     void modifyStarshipDuplicateKeyException() {
         // Arrange
         MovieEntity movie = MovieEntity.builder().id(1L).title("Star Wars").build();
-        StarshipDto starshipDto = new StarshipDto(0L, "X-Wing", new MovieDto(movie));
+        StarshipDtoNullable starshipDto = StarshipDtoFactory.create(0L, "X-Wing", MovieMapper.toDto(movie));
         given(starshipRepository.save(any()))
                 .willThrow(new DataIntegrityViolationException("Database constraint violation"));
 
         // Act
         Executable exec = () -> {
-            adapter.modifyStarship(starshipDto);
+            adapter.save(starshipDto);
         };
 
         // Assert
-        assertThrows(DataIntegrityViolationException.class, exec);
+        assertThrows(DependencyConflictException.class, exec);
     }
 
     @Test
-    void deleteStarship() {
+    void deleteStarshipSuccess() {
 
         // Arrange
         given(starshipRepository.existsById(any())).willReturn(true);
@@ -210,12 +212,9 @@ public class StarshipDataAdapterTest {
         given(starshipRepository.existsById(any())).willReturn(false);
 
         // Act
-        Executable exec = () -> {
-            adapter.deleteStarship(20L);
-        };
 
         // Assert
-        assertThrows(EntityNotFoundException.class, exec);
+        assertThrows(StarshipNotFoundException.class, () -> adapter.deleteStarship(20L));
     }
 
     @Test

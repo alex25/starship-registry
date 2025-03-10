@@ -1,0 +1,57 @@
+@startuml
+title Use case Remove Starship Feature
+
+actor User
+participant "StarshipController" as Controller
+participant "DeleteUseCase" as delete
+participant "StarshipDataAdapter" as Service
+participant "StarshipRepository" as Repository
+participant "CacheManager" as Cache
+
+== Scenario 1: Successfully remove an existing starship ==
+User -> Controller: Request to remove starship (ID)
+Controller -> delete: executeDeleteStarship(ID)
+delete -> Service: callRemoveStarship(ID)
+Service -> Repository: Check if starship exists
+Repository --> Service: Confirm existence
+Service -> Repository: Delete starship by ID
+Repository --> Service: Starship deleted
+Service -> Cache: Clear caches ("starshipsByName", "starshipById", "allStarships")
+Cache --> Service: Caches cleared
+Service --> delete: Return success response
+delete --> Controller: Return processed result
+Controller --> User: Confirm removal
+
+== Scenario 2: Attempt to remove a non-existent starship ==
+User -> Controller: Request to remove starship (non-existent ID)
+Controller -> delete: executeDeleteStarship(invalid ID)
+delete -> Service: callRemoveStarship(invalid ID)
+Service -> Repository: Check if starship exists
+Repository --> Service: Throw EntityNotFoundException
+Service --> delete: Return error response
+delete --> Controller: Return formatted error
+Controller --> User: Display error message "Starship with ID not found"
+
+== Scenario 3: Attempt to remove a starship with existing dependencies ==
+User -> Controller: Request to remove starship (ID with dependencies)
+Controller -> delete: executeDeleteStarship(ID)
+delete -> Service: callRemoveStarship(ID)
+Service -> Repository: Delete starship by ID
+Repository --> Service: Throw DataIntegrityViolationException
+Service --> delete: Return error response
+delete --> Controller: Return formatted error
+Controller --> User: Display error message "Starship cannot be deleted due to existing dependencies"
+
+== Scenario 4: Clear cache after removing a starship ==
+User -> Controller: Request to remove starship (ID)
+Controller -> delete: executeDeleteStarship(ID)
+delete -> Service: callRemoveStarship(ID)
+Service -> Repository: Delete starship by ID
+Repository --> Service: Starship deleted
+Service -> Cache: Clear caches ("starshipsByName", "starshipById", "allStarships")
+Cache --> Service: Caches cleared
+Service --> delete: Return success response
+delete --> Controller: Return confirmation
+Controller --> User: Confirm removal and cache cleared
+
+@enduml

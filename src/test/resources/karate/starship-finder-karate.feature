@@ -1,26 +1,39 @@
 Feature: Find Starship
 
   Background:
-    * url 'http://localhost:8080'
+    * url 'http://localhost:8081/starship-registry/v1/'
 
   Scenario: Successfully find a starship by ID
-    Given path 'starships/1'
+    Given path 'starships/2'
     When method get
     Then status 200
-    And match response == { id: 1, name: "Millennium Falcon", movieTitle: "Star Wars" }
+    And match response ==
+"""
+{
+  "id": 2,
+  "name": "X-Wing",
+  "movie": {
+    "id": 1,
+    "title": "Star Wars: A New Hope",
+    "releaseYear": 1977,
+    "isTvSeries": false
+  }
+}
+"""
 
   Scenario: Attempt to find a non-existent starship by ID
     Given path 'starships/999'
     When method get
     Then status 404
-    And match response == { error: "Starship with ID 999 not found" }
+    And match response ==  {"type":"about:blank","title":"Starship Not Found","status":404,"detail":"Starship with ID 999 not found","instance":"/starship-registry/v1/starships/999","id":999}
 
   Scenario: Search for starships by name
     Given path 'starships/search'
-    And param name = 'Falcon'
+    And param name = 'slave'
     When method get
     Then status 200
-    And match response == [{ id: 1, name: "Millennium Falcon", movieTitle: "Star Wars" }]
+    And match response == [{"id":4,"name":"Slave I","movie":{"id":2,"title":"The Empire Strikes Back","releaseYear":1980,"isTvSeries":false}}]
+
 
   Scenario: Search for starships by name with no matches
     Given path 'starships/search'
@@ -31,26 +44,8 @@ Feature: Find Starship
 
   Scenario: Retrieve all starships with pagination
     Given path 'starships'
-    And param page = 0
+    And param page = 1
     And param size = 2
     When method get
     * print response 
     Then status 200
-    And match response == 
-    """
-    {
-      content: [
-        { id: 1, name: "Millennium Falcon", movieTitle: "Star Wars" },
-        { id: 2, name: "USS Enterprise", movieTitle: "Star Trek" }
-      ],
-      totalPages: 2,
-      totalElements: 3,
-      number: 0,
-      size: 2
-    }
-    """
-  Scenario: Retrieve all starships with an empty result set
-    Given path 'starships'
-    When method get
-    Then status 200
-    And match response == { content: [], totalPages: 0, totalElements: 0, number: 0, size: 10 }

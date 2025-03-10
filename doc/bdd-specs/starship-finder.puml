@@ -1,0 +1,106 @@
+@startuml
+title Use case Find Starship Feature
+
+actor User
+participant "StarshipController" as Controller
+participant "FinderUseCase" as Finder
+participant "StarshipDataAdapter" as Service
+participant "StarshipRepository" as Repository
+participant "CacheManager" as Cache
+
+== Scenario 1: Successfully find a starship by ID ==
+User -> Controller: Request to find starship by ID
+Controller -> Finder: executeFindById(ID)
+Finder -> Service: callFindStarshipById(ID)
+Service -> Cache: Check cache for "starshipById"
+alt Cache hit
+    Cache --> Service: Return cached starship
+else Cache miss
+    Service -> Repository: Query starship by ID
+    Repository --> Service: Return starship entity
+    Service -> Cache: Store result in cache
+end
+Service --> Finder: Return starship details
+Finder --> Controller: Return processed result
+Controller --> User: Display starship details
+
+== Scenario 2: Attempt to find a non-existent starship by ID ==
+User -> Controller: Request to find starship by non-existent ID
+Controller -> Finder: executeFindById(invalid ID)
+Finder -> Service: callFindStarshipById(invalid ID)
+Service -> Cache: Check cache for "starshipById"
+alt Cache hit
+    Cache --> Service: Return empty result
+else Cache miss
+    Service -> Repository: Query starship by ID
+    Repository --> Service: Throw EntityNotFoundException
+end
+Service --> Finder: Return error response
+Finder --> Controller: Return formatted error
+Controller --> User: Display error message "Starship with ID not found"
+
+== Scenario 3: Search for starships by name ==
+User -> Controller: Request to search starships by name
+Controller -> Finder: executeSearchByName(name)
+Finder -> Service: callSearchStarshipsByName(name)
+Service -> Cache: Check cache for "starshipsByName"
+alt Cache hit
+    Cache --> Service: Return cached results
+else Cache miss
+    Service -> Repository: Query starships by name
+    Repository --> Service: Return list of starships
+    Service -> Cache: Store results in cache
+end
+Service --> Finder: Return starship list
+Finder --> Controller: Return filtered results
+Controller --> User: Display search results
+
+== Scenario 4: Search for starships by name with no matches ==
+User -> Controller: Request to search starships by unknown name
+Controller -> Finder: executeSearchByName(unknown name)
+Finder -> Service: callSearchStarshipsByName(unknown name)
+Service -> Cache: Check cache for "starshipsByName"
+alt Cache hit
+    Cache --> Service: Return empty list
+else Cache miss
+    Service -> Repository: Query starships by name
+    Repository --> Service: Return empty list
+    Service -> Cache: Store empty result in cache
+end
+Service --> Finder: Return empty list
+Finder --> Controller: Return empty response
+Controller --> User: Display empty results
+
+== Scenario 5: Retrieve all starships with pagination ==
+User -> Controller: Request all starships (page, size)
+Controller -> Finder: executeFindAll(pageable)
+Finder -> Service: callFindAllStarships(pageable)
+Service -> Cache: Check cache for "allStarships"
+alt Cache hit
+    Cache --> Service: Return cached page
+else Cache miss
+    Service -> Repository: Query all starships with pagination
+    Repository --> Service: Return paginated results
+    Service -> Cache: Store results in cache
+end
+Service --> Finder: Return paginated starships
+Finder --> Controller: Return mapped results
+Controller --> User: Display paginated results
+
+== Scenario 6: Retrieve all starships with an empty result set ==
+User -> Controller: Request all starships
+Controller -> Finder: executeFindAll()
+Finder -> Service: callFindAllStarships()
+Service -> Cache: Check cache for "allStarships"
+alt Cache hit
+    Cache --> Service: Return empty list
+else Cache miss
+    Service -> Repository: Query all starships
+    Repository --> Service: Return empty list
+    Service -> Cache: Store empty result in cache
+end
+Service --> Finder: Return empty list
+Finder --> Controller: Return empty response
+Controller --> User: Display empty results
+
+@enduml

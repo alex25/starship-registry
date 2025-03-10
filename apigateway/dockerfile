@@ -1,0 +1,43 @@
+# Base image for the build stage
+FROM eclipse-temurin:21 AS build
+
+# Environment variables that can be defined externally during build or container execution
+ARG KEYCLOAK_SERVICE_URI='http://localhost:8080'
+ARG STARSHIP_SERVICE_URI='http://localhost:8081'
+ARG APP_PORT='8888'
+
+# Set application environment variables (overridable)
+ENV KEYCLOAK_SERVICE_URI=${KEYCLOAK_SERVICE_URI}
+ENV STARSHIP_SERVICE_URI=${STARSHIP_SERVICE_URI}
+ENV APP_PORT=${APP_PORT}
+
+# Set working directory and copy project files
+WORKDIR /usr/src/app
+COPY . .
+
+# Grant execution permissions to Maven Wrapper (if used)
+RUN chmod +x mvnw
+
+# Compile the application using Maven Wrapper
+RUN ./mvnw clean package -DskipTests
+
+# Base image for the runtime stage
+FROM eclipse-temurin:21 AS runtime
+
+# Re-declare ARGs to use them in the runtime stage
+ARG APP_PORT
+
+# Install timezone data for the runtime image
+RUN apt-get update && apt-get install -y tzdata && rm -rf /var/lib/apt/lists/*
+
+# Set timezone for the operating system
+ENV TZ=America/Argentina/Buenos_Aires
+
+# Copy the JAR file from the build stage
+COPY --from=build /usr/src/app/target/*.jar /app.jar
+
+# Expose the application port
+EXPOSE ${APP_PORT}
+
+# Command to run the application with JVM timezone configuration
+CMD ["java", "-Duser.timezone=America/Argentina/Buenos_Aires", "-jar", "/app.jar"]
