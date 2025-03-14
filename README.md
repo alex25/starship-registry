@@ -93,7 +93,7 @@ mvn test -Dtest=IntegrationTestRunner -Dkarate.options=classpath:karate/starship
 
 ## Run with Docker
 ```
-docker build --pull --rm -f 'starship-registry\dockerfile' -t 'starshipregistry:latest' 'starship-registry'
+docker build --pull --rm -f dockerfile -t starshipregistry:latest .
 docker run -p 8081:8081 starshipregistry:latest
 ```
 
@@ -148,7 +148,7 @@ Open the management console at http://localhost:8080/admin
   - Credetials: Regenerate Client secret (client_secret)
 - Create User:
     - Username: user (username)
-    - Credentials: set password user123 (password)
+    - Credentials: set password user123 (password) temporary off
 
 Execution request example:
 ```

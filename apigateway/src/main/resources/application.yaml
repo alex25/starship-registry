@@ -27,7 +27,6 @@ server:
   port: ${APP_PORT:8888}
 
 
-
 # Actuator configuration
 management:
     endpoints:

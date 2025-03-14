@@ -49,3 +49,26 @@ Feature: Find Starship
     When method get
     * print response 
     Then status 200
+
+
+  Scenario: Get token of Keycloak and use to find starship by ID
+    # Step 1: Get token of Keycloak
+    Given url 'http://localhost:8080/realms/starship-registry/protocol/openid-connect/token'
+    And form field grant_type = 'password'
+    And form field client_id = 'api-gateway'
+    And form field username = 'user'
+    And form field password = 'user123'
+    And form field client_secret = 'client_secret'
+    When method post
+    Then status 200
+    And match response.token_type == 'Bearer'
+    * def accessToken = response.access_token
+
+* def hostApi = 'http://localhost:8888/api/starship-registry/v1/'
+
+ # Step 2: Use token to find starship by ID
+    Given url hostApi + '/starships/2'
+    And header Authorization = 'Bearer ' + accessToken
+    When method get
+    Then status 200
+    And match response contains { id: '#number', name: '#string' } 

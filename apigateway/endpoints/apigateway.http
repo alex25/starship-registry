@@ -10,7 +10,7 @@
 POST http://localhost:8080/realms/starship-registry/protocol/openid-connect/token
 Content-Type:application/x-www-form-urlencoded
 
-grant_type=password&client_id=api-gateway&username=user&password=user123&client_secret=uczeS2BlcYNdcLmaOEv8vcQaqxwc10du
+grant_type=password&client_id=api-gateway&username=user&password=user123&client_secret=client_secret
 
 
 ####
@@ -53,11 +53,16 @@ Authorization: Bearer {{keycloakToken.response.body.access_token}}
 ###
 # openapi doc
 GET http://{{host}}/{{contextPath}}/api-docs
+Authorization: Bearer {{keycloakToken.response.body.access_token}}
+
 
 ###
 # Swagger ui
 GET http://{{host}}/{{contextPath}}/swagger-ui.html
+Authorization: Bearer {{keycloakToken.response.body.access_token}}
+
 
 ###
 # Health
 http://localhost:8887/monitor/health
+Authorization: Bearer {{keycloakToken.response.body.access_token}}

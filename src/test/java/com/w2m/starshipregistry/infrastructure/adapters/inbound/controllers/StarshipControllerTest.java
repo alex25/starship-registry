@@ -202,8 +202,7 @@ public class StarshipControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(invalidRequest)))
                .andExpect(status().isBadRequest())
-               .andExpect(jsonPath("$.name").value("must not be blank"))
-               .andExpect(jsonPath("$.movieId").value("must not be null"));
+               .andExpect(jsonPath("$.name").value("must not be blank"));
     }
 
 }

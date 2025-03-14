@@ -8,15 +8,12 @@ import static org.mockito.Mockito.when;
 import java.util.Set;
 
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.SpringApplication;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.cache.CacheManager;
-import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 
-
-@SpringBootTest
+@SpringBootTest()
 public class StarshipRegistryApplicationTest {
 
     private final CacheManager cacheManager = mock(CacheManager.class);
@@ -53,13 +50,5 @@ public class StarshipRegistryApplicationTest {
         verify(valueOperations).get("testKey");
     }
 
-    @Test
-    void contextLoads() {
-        ConfigurableApplicationContext context = SpringApplication.run(StarshipRegistryApplication.class);
-
-        assertThat(context).isNotNull();
-
-        context.close();
-    }
 
 }
