@@ -151,7 +151,7 @@
         <dependency>
             <groupId>org.testcontainers</groupId>
             <artifactId>rabbitmq</artifactId>
-             <scope>test</scope>
+            <scope>test</scope>
         </dependency>
 
     </dependencies>
@@ -187,7 +187,7 @@
                     <includes>
                         <include>**/IntegrationTestRunner.java</include>
                         <include>**/*IT.java</include>
-                        <include>**/*IntegrationTest.java</include>IntegrationTest
+                        <include>**/*IntegrationTest.java</include>
                     </includes>
                 </configuration>
             </plugin>
@@ -222,6 +222,17 @@
                 </configuration>
             </plugin>
         </plugins>
+        <resources>
+            <resource>
+                <directory>config</directory>
+            </resource>
+            <resource>
+                <directory>apigateway/config</directory>
+            </resource>
+            <resource>
+                <directory>src/main/resources</directory>
+            </resource>
+        </resources>
     </build>
 
 </project>
