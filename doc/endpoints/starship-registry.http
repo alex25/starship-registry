@@ -4,6 +4,53 @@
 @contextPath = starship-registry/v1
 
 
+
+###
+GET http://localhost:15672/ HTTP/1.1
+User-Agent: vscode-restclient
+Authorization: Bearer YWRtaW46YWRtaW4xMjM=
+accept-encoding: gzip, deflate
+
+
+####
+# Send update Starship
+POST http://localhost:15672/api/exchanges/%2F/amq.default/publish HTTP/1.1
+Authorization: Basic YWRtaW46YWRtaW4xMjM=
+Content-Type: application/json
+
+{
+  "properties": {},
+  "routing_key": "starship-updates",
+  "payload": "{\"id\":1,\"name\":\"Millennium Falcon11\",\"movieId\":1}",
+  "payload_encoding": "string"
+}
+
+####
+# Send Starship modification 
+POST http://localhost:15672/api/exchanges/%2F/starship-exchange/publish HTTP/1.1
+Authorization: Basic YWRtaW46YWRtaW4xMjM=
+Content-Type: application/json
+
+{
+  "properties": {},
+  "routing_key": "starship.modification",
+  "payload": "{\"id\":1,\"name\":\"Millennium Falcon11\",\"movieId\":1}",
+  "payload_encoding": "string"
+}
+
+####
+# get Starship modifications
+POST http://localhost:15672/api/queues/%2F/starship-modifications/get HTTP/1.1
+Authorization: Basic YWRtaW46YWRtaW4xMjM=
+Content-Type: application/json
+
+{
+  "count": 1,          
+  "ackmode": "ack_requeue_false", 
+  "encoding": "auto"
+}
+
+
 ####
 # find by id
 GET http://{{host}}/{{contextPath}}/starships/2

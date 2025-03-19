@@ -1,6 +1,6 @@
 Configuration:
   status: WARN
-  monitorInterval: 30
+  monitorInterval: 30 
   appenders:
     Console:
       name: ConsoleAppender

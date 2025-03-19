@@ -1,23 +1,22 @@
 function fn() {
-  var env = karate.env; // get system property 'karate.env'
-  karate.log('karate.env:', env);
+  console.log('Cargando karate-config.js...');
   
-  if (!env) {
-    env = 'dev';
-  }
-  
+  base64Encode = function(input) {
+      return java.util.Base64.getEncoder().encodeToString(new java.lang.String(input).getBytes());
+  };
+
+
+  generateBasicAuthHeader = function(username, password) {
+      var credentials = username + ':' + password;
+      var encodedCredentials = base64Encode(credentials);
+      return 'Basic ' + encodedCredentials;
+  };
+
   var config = {
-    baseUrl: 'http://localhost:8081'
-  }
-  
-  if (env == 'dev') {
-    // customize for dev environment
-  } else if (env == 'qa') {
-    // customize for qa environment
-    config.baseUrl = 'http://qa-api.yourcompany.com';
-  }
-  
+      baseUrl: 'http://localhost:15672', 
+      authHeader: generateBasicAuthHeader('admin', 'admin123') 
+  };
+
   return config;
 }
-
   

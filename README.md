@@ -88,7 +88,7 @@ This will start:
 ```bash
 mvn test          # Unit tests
 mvn verify        # Integration tests
-mvn test -Dtest=IntegrationTestRunner -Dkarate.options=classpath:karate/starship-adding-karate.feature:7 # Example Specific case Integration, tests file: starship-adding-karate.feature, case line: 7
+mvn test -Dtest=KarateTestRunner -Dkarate.options=classpath:karate/starship-adding-karate.feature:24 # Example Specific case Integration, tests file: starship-adding-karate.feature, case line: 24
 ```
 
 ## Run with Docker

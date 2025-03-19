@@ -99,7 +99,7 @@ public class StarshipRegistryIntegrationTest {
                         .withEnv("SPRING_PROFILES_ACTIVE", "dev");
 
         @Karate.Test
-        Karate testExample() {
+        Karate karateTestRunner() {
                 log.info("Redis started on port: " + redis.getMappedPort(6379));
                 log.info("RabbitMQ started on port: " + rabbitmq.getMappedPort(5672));
                 log.info("Keycloak started on port: " + keycloak.getMappedPort(8080));

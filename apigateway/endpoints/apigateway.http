@@ -47,7 +47,7 @@ Authorization: Bearer {{keycloakToken.response.body.access_token}}
   "movieTitle": "Star Wars: A New Hope",
   "movieRelease": 1977,
   "isTvSeries": false
-  }
+  
 }
 
 ###
