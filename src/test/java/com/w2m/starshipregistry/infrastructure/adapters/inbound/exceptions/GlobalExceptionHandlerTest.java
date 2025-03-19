@@ -1,7 +1,9 @@
 package com.w2m.starshipregistry.infrastructure.adapters.inbound.exceptions;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,6 +24,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import com.w2m.starshipregistry.core.exceptions.StarshipDependencyException;
 import com.w2m.starshipregistry.core.exceptions.StarshipDuplicatedException;
 import com.w2m.starshipregistry.core.exceptions.StarshipNotFoundException;
+
 import jakarta.servlet.http.HttpServletRequest;
 
 @ExtendWith(MockitoExtension.class)
@@ -38,6 +41,7 @@ public class GlobalExceptionHandlerTest {
         request = mock(HttpServletRequest.class);
     }
 
+    @SuppressWarnings("null")
     @Test
     void handleStarshipNotFoundExceptionReturnsNotFound() {
         Long id = 123L;
@@ -67,6 +71,7 @@ public class GlobalExceptionHandlerTest {
         assertEquals(message, problemDetail.getDetail());
     }
 
+    @SuppressWarnings("null")
     @Test
     void handleStarshipDuplicatedExceptionReturnsConflict() {
         Long id = 456L;
@@ -104,6 +109,7 @@ public class GlobalExceptionHandlerTest {
         fieldErrors.add(new FieldError("object", "field1", "message1"));
         fieldErrors.add(new FieldError("object", "field2", "message2"));
         when(bindingResult.getFieldErrors()).thenReturn(fieldErrors);
+        @SuppressWarnings("null")
         MethodArgumentNotValidException ex = new MethodArgumentNotValidException(null, bindingResult);
 
         ResponseEntity<Map<String, String>> response = handler.handleValidationExceptions(ex);

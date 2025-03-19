@@ -60,10 +60,10 @@ services:
       - "15672:15672"                # RabbitMQ management web interface port
     environment:
       - TZ= America/Argentina/Buenos_Aires
-      - RABBITMQ_DEFAULT_USER=admin             # Usuario personalizado
-      - RABBITMQ_DEFAULT_PASS=admin123          # Contraseña personalizada
+      - RABBITMQ_DEFAULT_USER=admin             # rabbitmq admin user
+      - RABBITMQ_DEFAULT_PASS=admin123          # rabbitmq admin password
     volumes:
-      - ./config/rabbitmq.conf:/etc/rabbitmq/rabbitmq.conf # Archivo de configuración 
+      - ./config/rabbitmq.conf:/etc/rabbitmq/rabbitmq.conf 
     networks:
       - starship-network             # Common network for all services
 
@@ -76,7 +76,7 @@ services:
     environment:
       TZ: America/Argentina/Buenos_Aires
       KEYCLOAK_ADMIN: admin                 # Keycloak admin user
-      KEYCLOAK_ADMIN_PASSWORD: admin        # Keycloak admin password
+      KEYCLOAK_ADMIN_PASSWORD: admin123        # Keycloak admin password
       KC_HTTP_ENABLED: true                 # Enable HTTP (use HTTPS in production)
       KC_HOSTNAME: keycloak
       KC_HOSTNAME_PORT: 8080

@@ -10,7 +10,7 @@ GET http://{{host}}/{{contextPath}}/starships/2
 
 ####
 # find by name
-GET http://{{host}}/{{contextPath}}/starships/search?name=Unknown
+GET http://{{host}}/{{contextPath}}/starships/search?name=wing&page=0&size=2
 
 ####
 # find all

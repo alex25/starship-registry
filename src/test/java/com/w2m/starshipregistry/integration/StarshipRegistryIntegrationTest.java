@@ -12,13 +12,17 @@ import org.testcontainers.utility.DockerImageName;
 
 import com.intuit.karate.junit5.Karate;
 
+import lombok.extern.slf4j.Slf4j;
+
 @Testcontainers
+@Slf4j
 public class StarshipRegistryIntegrationTest {
 
         // Shared network for all containers
         private static final Network starshipNetwork = Network.newNetwork();
 
         // Redis container
+        @SuppressWarnings("resource")
         @Container
         private static final GenericContainer<?> redis = new GenericContainer<>(DockerImageName.parse("redis:latest"))
                         .withExposedPorts(6379)
@@ -31,6 +35,7 @@ public class StarshipRegistryIntegrationTest {
                                         BindMode.READ_ONLY);
 
         // RabbitMQ container
+        @SuppressWarnings("resource")
         @Container
         private static final GenericContainer<?> rabbitmq = new GenericContainer<>(
                         DockerImageName.parse("rabbitmq:3-management"))
@@ -45,6 +50,7 @@ public class StarshipRegistryIntegrationTest {
                                         BindMode.READ_ONLY);
 
         // Keycloak container
+        @SuppressWarnings("resource")
         @Container
         private static final GenericContainer<?> keycloak = new GenericContainer<>(
                         DockerImageName.parse("quay.io/keycloak/keycloak:22.0.1"))
@@ -65,6 +71,7 @@ public class StarshipRegistryIntegrationTest {
                         .withCommand("start-dev", "--import-realm");
 
         // ApiGateway container
+        @SuppressWarnings("resource")
         @Container
         private static final GenericContainer<?> apigateway = new GenericContainer<>(
                         new ImageFromDockerfile().withDockerfile(Paths.get("apigateway/Dockerfile")))
@@ -78,6 +85,7 @@ public class StarshipRegistryIntegrationTest {
                         .withEnv("APP_PORT", "8888");
 
         // App container (Java application)
+        @SuppressWarnings("resource")
         @Container
         private static final GenericContainer<?> app = new GenericContainer<>(
                         new ImageFromDockerfile().withDockerfile(Paths.get("./dockerfile")))
@@ -92,11 +100,11 @@ public class StarshipRegistryIntegrationTest {
 
         @Karate.Test
         Karate testExample() {
-                System.out.println("Redis started on port: " + redis.getMappedPort(6379));
-                System.out.println("RabbitMQ started on port: " + rabbitmq.getMappedPort(5672));
-                System.out.println("Keycloak started on port: " + keycloak.getMappedPort(8080));
-                System.out.println("ApiGateway started on port: " + apigateway.getMappedPort(8888));
-                System.out.println("App started on port: " + app.getMappedPort(8081));
+                log.info("Redis started on port: " + redis.getMappedPort(6379));
+                log.info("RabbitMQ started on port: " + rabbitmq.getMappedPort(5672));
+                log.info("Keycloak started on port: " + keycloak.getMappedPort(8080));
+                log.info("ApiGateway started on port: " + apigateway.getMappedPort(8888));
+                log.info("App started on port: " + app.getMappedPort(8081));
 
                 String host = app.getHost();
                 int port = app.getMappedPort(8081);

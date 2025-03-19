@@ -131,7 +131,7 @@ You can verify that Redis and RabbitMQ are running correctly:
   ```
 
 - For RabbitMQ:
-  Open the management console at `http://localhost:15672` and log in with the default credentials (`guest` / `guest`).
+  Open the management console at `http://localhost:15672` and log in with the default credentials (`admin` / `admin123`).
 
 ### Manage Database
 
@@ -140,7 +140,7 @@ Open the management console at http://localhost:8081/starship-registry/v1/h2-con
 ### keycloak Required Configuration
 
 Open the management console at http://localhost:8080/admin
-- User/pass: admin/admin
+- User/pass: admin/admin123
 
 - Create Realm: Starship-registry
 - Create client: 

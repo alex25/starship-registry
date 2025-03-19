@@ -17,11 +17,9 @@ public class ReceiveDataModificationRabbit {
 
     private final ModifyStarshipFromMqPort modifyStarshipFromMqPort;
 
-    @RabbitListener(queues = "starship-updates",
-        errorHandler = "rabbitErrorHandler")
+    @RabbitListener(queues = "starship-updates", errorHandler = "rabbitErrorHandler")
     public void receiveMessage(StarshipDataModificationRequest message) {
-        System.out.println("Mensaje recibido: %s".formatted(message));
-         StarshipUpdateRequest updateRequest = new StarshipUpdateRequest(message.name(), message.movieId());
+        StarshipUpdateRequest updateRequest = new StarshipUpdateRequest(message.name(), message.movieId());
         modifyStarshipFromMqPort.execute(message.id(), updateRequest);
         log.info("New Starship added from mq: {}", message);
     }

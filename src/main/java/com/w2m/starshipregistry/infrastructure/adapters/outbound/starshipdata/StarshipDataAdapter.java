@@ -1,13 +1,13 @@
 package com.w2m.starshipregistry.infrastructure.adapters.outbound.starshipdata;
 
 import java.util.Collections;
-import java.util.List;
 import java.util.Optional;
 
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -40,12 +40,12 @@ public class StarshipDataAdapter implements StarshipDataPort {
 
     @Override
     @Cacheable("starshipsByName")
-    public List<StarshipDtoNullable> searchStarshipsByName(String name) {
+    public Page<StarshipDtoNullable> searchStarshipsByName(String name, Pageable pageable) {
         if (name == null) {
-            return Collections.emptyList();
+            return new PageImpl<>(Collections.emptyList()) ;
         }
-        return starshipRepository.findByNameContainingIgnoreCase(name)
-                .stream().map(StarshipMapper::toDto).toList();
+        return starshipRepository.findByNameContainingIgnoreCase(name, pageable)
+                .map(StarshipMapper::toDto);
     }
 
     @Override
@@ -79,7 +79,8 @@ public class StarshipDataAdapter implements StarshipDataPort {
         MovieEntity movieEntity = MovieMapper.toEntity(starshipAddRequest);
         StarshipEntity starshipEntity = StarshipMapper.toEntity(starshipAddRequest);
         try {
-            if (movieEntity.getId() == null) {
+            boolean isNewMovie = movieEntity.getId() == null;
+            if (isNewMovie) {
                 movieEntity = movieRepository.save(movieEntity);
             }
             starshipEntity.setMovie(movieEntity);

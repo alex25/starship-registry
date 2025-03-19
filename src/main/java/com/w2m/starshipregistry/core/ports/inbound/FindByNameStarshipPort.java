@@ -1,11 +1,12 @@
 package com.w2m.starshipregistry.core.ports.inbound;
 
-import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import com.w2m.starshipregistry.core.dto.StarshipDtoNullable;
 
 public interface FindByNameStarshipPort {
 
-    List<StarshipDtoNullable> execute(String name);
+    Page<StarshipDtoNullable> execute(String name, Pageable pageable);
 
 }

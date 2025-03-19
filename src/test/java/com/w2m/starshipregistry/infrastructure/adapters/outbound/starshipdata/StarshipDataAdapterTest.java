@@ -55,25 +55,27 @@ public class StarshipDataAdapterTest {
     void findStarshipSuccess() {
         MovieEntity movie = MovieEntity.builder().id(1L).title("Star Wars").build();
         StarshipEntity starship = StarshipEntity.builder().id(1L).name("Enterprise").movie(movie).build();
-        List<StarshipEntity> response = List.of(starship);
+        Page<StarshipEntity> response = new PageImpl<>(List.of(starship));
         // Arrange
-        given(starshipRepository.findByNameContainingIgnoreCase(any())).willReturn(response);
+        given(starshipRepository.findByNameContainingIgnoreCase(any(), any())).willReturn(response);
 
         // Act
-        List<StarshipDtoNullable> result = adapter.searchStarshipsByName("Enterprise");
+        Pageable pageable = PageRequest.of(0, 10);
+        Page<StarshipDtoNullable> result = adapter.searchStarshipsByName("Enterprise", pageable);
 
         // Assert
-        assertEquals(List.of(StarshipDtoFactory.create(1L, "Enterprise", MovieMapper.toDto(movie))), result);
+        assertEquals(List.of(StarshipDtoFactory.create(1L, "Enterprise", MovieMapper.toDto(movie))), result.getContent());
     }
 
     @Test
     void searchStarshipsByNameWithNullNameSuccess() {
         // Act
-        List<StarshipDtoNullable> result = adapter.searchStarshipsByName(null);
+        Pageable pageable = PageRequest.of(0, 10);
+        Page<StarshipDtoNullable> result = adapter.searchStarshipsByName(null, pageable);
 
         // Assert
         assertTrue(result.isEmpty());
-        verify(starshipRepository, never()).findByNameContainingIgnoreCase(any());
+        verify(starshipRepository, never()).findByNameContainingIgnoreCase(any(), any());
     }
 
     @Test

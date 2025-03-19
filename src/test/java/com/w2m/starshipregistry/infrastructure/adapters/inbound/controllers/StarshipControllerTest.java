@@ -120,14 +120,15 @@ public class StarshipControllerTest {
     void searchStarshipsByName() throws JsonProcessingException, Exception {
         MovieDtoNullable movie = MovieDtoFactory.create(1L, "Star Wars", 1986, false);
         StarshipDtoNullable starship = StarshipDtoFactory.create(1L, "X-wing", movie);
+        Pageable pageable = PageRequest.of(0, 10);
+        Page<StarshipDtoNullable> starships = new PageImpl<>(List.of(starship), pageable, 1);
+        PageResponse<StarshipDtoNullable> response = PageResponse.from(starships);
 
-        List<StarshipDtoNullable> starships = List.of(starship);
+        given(findByNameStarshipPort.execute("wing", pageable)).willReturn(starships);
 
-        given(findByNameStarshipPort.execute("wing")).willReturn(starships);
-
-        mockMvc.perform(get("/starships/search?name=wing"))
+        mockMvc.perform(get("/starships/search?name=wing&page=0&size=10"))
                 .andExpect(status().isOk())
-                .andExpect(content().json(objectMapper.writeValueAsString(starships)));
+                .andExpect(content().json(objectMapper.writeValueAsString(response)));
     }
 
     // DELETE /starships/{id}

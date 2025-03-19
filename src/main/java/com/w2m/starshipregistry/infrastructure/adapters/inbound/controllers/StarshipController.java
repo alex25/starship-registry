@@ -1,7 +1,5 @@
 package com.w2m.starshipregistry.infrastructure.adapters.inbound.controllers;
 
-import java.util.List;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -63,11 +61,16 @@ public class StarshipController {
 
     // Scenario: Search for starships by name
     @GetMapping("/search")
-    @Operation(summary = "Search starships by name", description = "Returns a list of starships matching the name")
+    @Operation(summary = "Search starships by name", description = "Returns a paginated starships matching the name")
     @ApiResponse(responseCode = "200", description = "Search results", content = @Content(mediaType = "application/json"))
-    public ResponseEntity<List<StarshipDtoNullable>> searchStarshipsByName(@RequestParam String name) {
-        List<StarshipDtoNullable> starships = findByNameStarshipPort.execute(name);
-        return ResponseEntity.ok(starships);
+    public ResponseEntity<PageResponse<StarshipDtoNullable>> searchStarshipsByName(
+            @RequestParam String name,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<StarshipDtoNullable> starships = findByNameStarshipPort.execute(name, pageable);
+        PageResponse<StarshipDtoNullable> response = PageResponse.from(starships);
+        return ResponseEntity.ok(response);
     }
 
     // Scenario: Retrieve all starships with pagination

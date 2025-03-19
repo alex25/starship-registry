@@ -3,7 +3,6 @@ package com.w2m.starshipregistry.infrastructure.adapters.outbound.database.repos
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.util.List;
 import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
@@ -46,9 +45,10 @@ public class StarshipRepositoryTest {
 
     @Test
     void findByNameContainingIgnoreCaseSuccess() {
-        List<StarshipEntity> starshipList = starshipRepository.findByNameContainingIgnoreCase("wing");
+        Pageable pageable = PageRequest.of(0, 10);
+        Page<StarshipEntity> starships = starshipRepository.findByNameContainingIgnoreCase("wing", pageable);
 
-        assertEquals("X-Wing", starshipList.getFirst().getName());
+        assertEquals("X-Wing", starships.getContent().getFirst().getName());
     }
 
     @Test
@@ -66,8 +66,9 @@ public class StarshipRepositoryTest {
     @Test
     void modifyStarshipSuccess() {
 
-        List<StarshipEntity> starshipList = starshipRepository.findByNameContainingIgnoreCase("X-Wing");
-        StarshipEntity starshipEntity = starshipList.getFirst();
+        Pageable pageable = PageRequest.of(0, 10);
+        Page<StarshipEntity> starships = starshipRepository.findByNameContainingIgnoreCase("X-Wing", pageable);
+        StarshipEntity starshipEntity = starships.getContent().getFirst();
         starshipEntity.setName("X-Wing II");
 
         StarshipEntity starshipEntityPersisted = starshipRepository.save(starshipEntity);
@@ -78,13 +79,14 @@ public class StarshipRepositoryTest {
     @Test
     void deleteStarshipSuccess() {
 
-        List<StarshipEntity> starshipList = starshipRepository.findByNameContainingIgnoreCase("X-Wing");
-        StarshipEntity starshipEntity = starshipList.getFirst();
+        Pageable pageable = PageRequest.of(0, 10);
+        Page<StarshipEntity> starships = starshipRepository.findByNameContainingIgnoreCase("X-Wing", pageable);
+        StarshipEntity starshipEntity = starships.getContent().getFirst();
 
         starshipRepository.delete(starshipEntity);
 
-        starshipList = starshipRepository.findByNameContainingIgnoreCase("X-Wing");
+        starships = starshipRepository.findByNameContainingIgnoreCase("X-Wing", pageable);
 
-        assertTrue(starshipList.isEmpty());
+        assertTrue(starships.isEmpty());
     }
 }

@@ -40,7 +40,7 @@ Feature: Find Starship
     And param name = 'slave'
     When method get
     Then status 200
-    And match response == [{"id":4,"name":"Slave I","movie":{"id":2,"title":"The Empire Strikes Back","releaseYear":1980,"isTvSeries":false}}]
+    And match response == {"content":[{"id":4,"name":"Slave I","movie":{"id":2,"title":"The Empire Strikes Back","releaseYear":1980,"isTvSeries":false}}],"totalPages":1,"totalElements":1,"number":0,"size":10}
 
 
   Scenario: Search for starships by name with no matches
@@ -48,7 +48,7 @@ Feature: Find Starship
     And param name = 'Unknown'
     When method get
     Then status 200
-    And match response == []
+    And match response ==  {"content":[],"totalPages":0,"totalElements":0,"number":0,"size":10}
 
   Scenario: Retrieve all starships with pagination
     Given path 'starships'
@@ -98,7 +98,7 @@ Scenario: Search for starships by name with token
   And param name = 'slave'
   When method get
   Then status 200
-  And match response == [{"id":4,"name":"Slave I","movie":{"id":2,"title":"The Empire Strikes Back","releaseYear":1980,"isTvSeries":false}}]
+  And match response == {"content":[{"id":4,"name":"Slave I","movie":{"id":2,"title":"The Empire Strikes Back","releaseYear":1980,"isTvSeries":false}}],"totalPages":1,"totalElements":1,"number":0,"size":10}
 
 Scenario: Search for starships by name with no matches with token
   Given url hostApi + 'starships/search'
@@ -106,7 +106,7 @@ Scenario: Search for starships by name with no matches with token
   And param name = 'Unknown'
   When method get
   Then status 200
-  And match response == []
+  And match response == {"content":[],"totalPages":0,"totalElements":0,"number":0,"size":10}
 
 Scenario: Retrieve all starships with pagination with token
   Given url hostApi + 'starships'

@@ -14,6 +14,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 import com.w2m.starshipregistry.core.dto.MovieDtoNullable;
 import com.w2m.starshipregistry.core.dto.StarshipDtoNullable;
@@ -41,31 +45,33 @@ public class FindByNameStarshipUseCaseTest {
 
     @Test
     void executeShouldReturnStarshipsByName() {
+        Page<StarshipDtoNullable> expectedStarships = new PageImpl<>(List.of(existingStarshipDto));
         // Arrange
-        List<StarshipDtoNullable> expectedList = List.of(existingStarshipDto);
-        
-        when(starshipDataPort.searchStarshipsByName(TEST_NAME))
-            .thenReturn(expectedList);
+        Pageable pageable = PageRequest.of(0, 10);
+        when(starshipDataPort.searchStarshipsByName(TEST_NAME, pageable))
+            .thenReturn(expectedStarships);
 
         // Act
-        List<StarshipDtoNullable> result = findByNameStarshipUseCase.execute(TEST_NAME);
+        Page<StarshipDtoNullable> result = findByNameStarshipUseCase.execute(TEST_NAME, pageable);
 
         // Assert
-        assertThat(result).isEqualTo(expectedList);
-        verify(starshipDataPort).searchStarshipsByName(eq(TEST_NAME));
+        assertThat(result).isEqualTo(expectedStarships);
+        verify(starshipDataPort).searchStarshipsByName(eq(TEST_NAME), eq(pageable));
     }
 
     @Test
     void executeWhenNoResultsFoundShouldReturnEmptyList() {
+        Page<StarshipDtoNullable> emptyStarships = new PageImpl<>(Collections.emptyList());
         // Arrange
-        when(starshipDataPort.searchStarshipsByName(TEST_NAME))
-            .thenReturn(Collections.emptyList());
+        Pageable pageable = PageRequest.of(0, 10);
+        when(starshipDataPort.searchStarshipsByName(TEST_NAME, pageable))
+            .thenReturn(emptyStarships);
 
         // Act
-        List<StarshipDtoNullable> result = findByNameStarshipUseCase.execute(TEST_NAME);
+        Page<StarshipDtoNullable> result = findByNameStarshipUseCase.execute(TEST_NAME, pageable);
 
         // Assert
         assertThat(result).isEmpty();
-        verify(starshipDataPort).searchStarshipsByName(eq(TEST_NAME));
+        verify(starshipDataPort).searchStarshipsByName(eq(TEST_NAME), eq(pageable));
     }
 }
